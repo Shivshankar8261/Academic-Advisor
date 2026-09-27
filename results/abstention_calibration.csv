@@ -1,0 +1,35 @@
+id,category,group,best_rerank,top_source
+S01,out_of_scope,out_of_scope,-9.22,Student Handbook (August 2026) — Clause 3–3.4 — p.58
+A02,ambiguous_needs_followup,answerable,-4.72,SOP for Students (17 Aug 2026) — p.3
+A03,ambiguous_needs_followup,answerable,-4.07,Student Handbook (August 2026) — Clause 7.6 — p.30
+P02,prerequisite_eligibility,answerable,-2.84,Programme Structure & Semester Spread (Sept 2026) — COMP203
+S02,out_of_scope,out_of_scope,-1.01,SOP for Students (17 Aug 2026) — p.4
+C03,credits_progression,answerable,-0.87,Student Handbook (August 2026) — Clause 12–12.3 — p.42
+M04,missing_information,missing_info,-0.34,Student Handbook (August 2026) — Clause 8.12–8.13.2 — p.33
+M03,missing_information,missing_info,0.0,Programme Structure & Semester Spread (Sept 2026) — DATA301
+A01,ambiguous_needs_followup,answerable,0.42,Programme Structure & Semester Spread (Sept 2026) — DATA301
+A04,ambiguous_needs_followup,answerable,1.69,Student Handbook (August 2026) — Clause 12.5.1–12.5.3 — p.43
+R02,regulation_factual,answerable,1.92,SOP for Students (17 Aug 2026) — p.3
+P06,prerequisite_eligibility,answerable,2.02,Programme Structure & Semester Spread (Sept 2026) — DATA301
+M01,missing_information,missing_info,2.1,Student Handbook (August 2026) — Clause 8.10–8.11 — p.32
+M02,missing_information,missing_info,2.29,Programme Structure & Semester Spread (Sept 2026) — COMP201
+X03,conflicting_rules,answerable,2.39,Student Handbook (August 2026) — Clause 7–7.2 — p.29
+R06,regulation_factual,answerable,2.42,Student Handbook (August 2026) — Clause 6–6.3 — p.28
+R05,regulation_factual,answerable,2.87,Student Handbook (August 2026) — Clause 8.13.3 — p.33
+P04,prerequisite_eligibility,answerable,4.01,Programme Structure & Semester Spread (Sept 2026) — DATA209
+R07,regulation_factual,answerable,4.08,Student Handbook (August 2026) — Clause 15.3–15.4 — p.46
+R04,regulation_factual,answerable,4.2,Student Handbook (August 2026) — Clause 8.10–8.11 — p.32
+R03,regulation_factual,answerable,4.23,Student Handbook (August 2026) — Clause 8.12–8.13.2 — p.33
+X02,conflicting_rules,answerable,5.2,Programme Structure & Semester Spread (Sept 2026) — COMP302
+O02,course_offering,answerable,5.87,Programme Structure & Semester Spread (Sept 2026) — COMP201
+C01,credits_progression,answerable,6.5,Student Handbook (August 2026) — Clause 12–12.3 — p.42
+R01,regulation_factual,answerable,6.63,SOP for Students (17 Aug 2026) — p.3
+R08,regulation_factual,answerable,7.13,SOP for Students (17 Aug 2026) — p.2
+C02,credits_progression,answerable,7.35,Student Handbook (August 2026) — Clause 12–12.3 — p.42
+P01,prerequisite_eligibility,answerable,7.45,Programme Structure & Semester Spread (Sept 2026) — COMP203
+X01,conflicting_rules,answerable,7.54,Programme Structure & Semester Spread (Sept 2026) — DATA301
+C04,credits_progression,answerable,8.15,Programme Structure & Semester Spread (Sept 2026) — credit-r
+P03,prerequisite_eligibility,answerable,8.2,Programme Structure & Semester Spread (Sept 2026) — DATA132
+P05,prerequisite_eligibility,answerable,8.26,Programme Structure & Semester Spread (Sept 2026) — MTSC211
+O01,course_offering,answerable,9.22,Programme Structure & Semester Spread (Sept 2026) — DATA301
+O03,course_offering,answerable,10.16,Minor Courses for B.Tech Students — minor-list

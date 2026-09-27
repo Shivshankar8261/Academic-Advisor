@@ -15,38 +15,56 @@ injected into the prompt as verified fact the model may not recompute.
 
 ```bash
 pip install -r requirements.txt
-export GOOGLE_API_KEY=...            # free key: https://aistudio.google.com/apikey
 
-python3 -m advisor.ingest            # 4 documents -> catalogue + cited chunks
-python3 -m advisor.synthetic         # 10 anonymised student profiles
-python3 -m advisor.conflicts         # mine curriculum contradictions
-python3 scripts/run_evaluation.py    # 34 cases x 4 variants -> results/
-python3 scripts/build_report.py      # -> report/REPORT.md   (with real numbers)
-python3 scripts/build_ppt.py         # -> report/*.pptx      (with real numbers)
+# keys go in .env (git-ignored):
+#   GROQ_API_KEY=gsk_...          primary   (Groq gpt-oss-120b, then gpt-oss-20b)
+#   GOOGLE_API_KEY=...            fallback  (Gemini 3.6 Flash)
+#   GOOGLE_API_KEY_2=...          optional second Gemini key
 
-streamlit run app.py                 # the prototype
+python3 -m advisor.ingest                 # 4 documents -> catalogue + structure-aware chunks
+python3 -m advisor.synthetic              # 10 anonymised student profiles
+python3 -m advisor.conflicts              # mine curriculum contradictions
+python3 -m advisor.retriever              # build the FAISS vector DB + smoke test
+python3 scripts/calibrate_abstention.py   # fit the abstention gate
+python3 scripts/run_evaluation.py         # 34 cases x 4 variants -> results/
+python3 scripts/build_report.py           # -> report/REPORT.md
+python3 scripts/build_ppt.py              # -> report/*.pptx
+
+streamlit run app.py                      # the prototype
 ```
 
 The notebook `notebooks/GenAI_A1_AI_Academic_Advisor.ipynb` walks Phases 1–5 cell by cell.
 
-## Deploy (free public demo link)
+## Retrieval stack
 
-1. Push this folder to a **public** GitHub repo.
-2. <https://share.streamlit.io> → *New app* → main file `app.py`.
-3. *Advanced settings → Secrets*:
+| Stage | Component |
+|---|---|
+| Chunking | structure-aware: clause blocks packed within one top-level clause (≤ ~300 tokens), contents pages dropped, contextual header per chunk |
+| Embeddings | `BAAI/bge-small-en-v1.5` sentence transformer (384-d, local) |
+| Vector DB | FAISS `IndexFlatIP` (exact cosine), persisted in `data/processed/vectorstore/` |
+| Hybrid | BM25 + dense, Reciprocal Rank Fusion, metadata filter on the student's batch |
+| Rerank | `cross-encoder/ms-marco-MiniLM-L-6-v2`, top-20 → top-4 |
+| Abstain | gate on the cross-encoder's absolute score (calibrated) |
+| LLM | Groq `gpt-oss-120b` → Groq `gpt-oss-20b` → Gemini `gemini-3.6-flash` |
+
+## Deploy (Streamlit Community Cloud)
+
+1. <https://share.streamlit.io> → *Create app* → repo `Shivshankar8261/Academic-Advisor`, branch `main`, file `app.py`.
+2. *Advanced settings → Secrets*:
    ```toml
-   GOOGLE_API_KEY = "your-key-here"
+   GROQ_API_KEY = "gsk_..."
+   GOOGLE_API_KEY = "..."
+   GOOGLE_API_KEY_2 = "..."
    ```
-4. Put the URL on the report cover page and the demo slide.
-
-`.gitignore` already excludes `.streamlit/secrets.toml`. Never commit the key.
+3. Deploy. `.env` and `.streamlit/secrets.toml` are git-ignored — never commit keys.
 
 ## Layout
 
 | Path | What it is |
 |---|---|
 | `advisor/ingest.py` | PDF + Excel → structured tables and clause-cited chunks |
-| `advisor/retriever.py` | BM25 ⊕ dense hybrid; **absolute-score** abstention |
+| `advisor/retriever.py` | BM25 + FAISS → RRF → cross-encoder rerank; abstention gate |
+| `advisor/llm.py` | Groq → Groq → Gemini router with token-window throttle |
 | `advisor/eligibility.py` | deterministic rule engine, every rule clause-cited |
 | `advisor/conflicts.py` | dangling / ordering / cross-batch conflict mining |
 | `advisor/prompts.py` | the four variants, exactly one ingredient apart |

@@ -1,7 +1,8 @@
 __pycache__/
 *.pyc
-.streamlit/secrets.toml
-data/processed/embeddings_*.pkl
 .env
+.streamlit/secrets.toml
 .DS_Store
-.DS_Store
+.ipynb_checkpoints/
+results/eval_run.log
+~$*

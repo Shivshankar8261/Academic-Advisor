@@ -65,13 +65,14 @@ def charts(table: pd.DataFrame, per_cat: pd.DataFrame) -> None:
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--quick", action="store_true", help="V1 and V4 only")
-    ap.add_argument("--sleep", type=float, default=1.2,
-                    help="seconds between calls (free-tier rate limit)")
+    ap.add_argument("--sleep", type=float, default=0.0,
+                    help="extra seconds between calls (the LLM router already throttles)")
+    ap.add_argument("--max-wait", type=float, default=65.0,
+                    help="seconds to wait for Groq's minute window before falling back")
     args = ap.parse_args()
 
-    key = os.getenv("GOOGLE_API_KEY") or os.getenv("GEMINI_API_KEY")
-    if not key:
-        sys.exit("Set GOOGLE_API_KEY first:  export GOOGLE_API_KEY=your-key")
+    if not (config._secret("GROQ_API_KEY") or config._secret("GOOGLE_API_KEY")):
+        sys.exit("No GROQ_API_KEY / GOOGLE_API_KEY found in environment or .env")
 
     if not config.CHUNKS_JSONL.exists():
         from advisor.ingest import build_all
@@ -83,7 +84,9 @@ def main() -> None:
     cases = testset.load()
     testset.save()
     students = {s.student_id: s for s in load_students()}
-    variants = build_all_variants(api_key=key)
+    # Evaluation WAITS for Groq's per-minute window instead of falling back,
+    # so that (quota permitting) one model answers every case.
+    variants = build_all_variants(max_wait=args.max_wait)
     if args.quick:
         variants = {k: v for k, v in variants.items() if k in ("V1_basic", "V4_rag_student")}
 
@@ -110,6 +113,9 @@ def main() -> None:
     print(per_cat.to_string())
 
     charts(table, per_cat)
+    raw = pd.concat([pd.DataFrame([r.__dict__ for r in res]) for res in results.values()])
+    print("\nanswers by provider/model:")
+    print(raw.groupby(["variant", "model"]).size().to_string())
     print("\nsaved:", ", ".join(str(p.name) for p in paths.values()))
     print("\nNext:  python3 scripts/build_report.py")
 

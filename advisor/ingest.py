@@ -307,25 +307,40 @@ class Chunk:
     source: str          # human-readable document name, shown to the user
     doc_key: str         # 'handbook' | 'sop' | 'catalogue'
     page: int | None
-    section: str
-    clause: str
+    section: str         # top-level heading, e.g. "7. Attendance Requirements"
+    clause: str          # most specific clause id the chunk starts at, e.g. "7.2"
     text: str
+    heading: str = ""    # contextual header prepended before embedding
+    parent: str = ""     # top-level clause id, for small-to-big expansion
+    batch: str = ""      # curriculum batch, for metadata filtering (catalogue only)
+    clause_end: str = "" # last clause id packed into this chunk
 
     def citation(self) -> str:
         bits = [self.source]
         if self.clause:
-            bits.append(f"Clause {self.clause}")
+            if self.doc_key == "catalogue":
+                bits.append(self.clause)
+            elif self.clause_end and self.clause_end != self.clause:
+                bits.append(f"Clause {self.clause}–{self.clause_end}")
+            else:
+                bits.append(f"Clause {self.clause}")
         if self.page:
             bits.append(f"p.{self.page}")
         return " — ".join(bits)
 
+    def embed_text(self) -> str:
+        """What actually gets embedded: heading + body (contextual chunk header).
+        A bare sub-clause like '7.3 ... sixty five percent' is ambiguous on its
+        own; prefixed with 'Attendance Requirements' it retrieves correctly."""
+        return f"{self.heading}\n{self.text}" if self.heading else self.text
+
 
 _LIGATURE = re.compile(r"\(cid:\d+\)")
-_CLAUSE_RE = re.compile(r"^\s*(\d{1,2}(?:\.\d{1,2}){0,3})\.?\s+(?=[A-Z(])")
-_SECTION_RE = re.compile(
-    r"^(SECTION\s+[IVX]+|ACADEMIC REGULATIONS|ADMISSION RULES.*|PREAMBLE.*|CONTENTS)\s*$",
-    re.I,
-)
+_CLAUSE_RE = re.compile(r"^\s*(\d{1,2}(?:\.\d{1,2}){0,3})\.?\s+(?=[A-Z(‘'\"a-z])")
+_TOPLEVEL_TITLE = re.compile(r"^\s*(\d{1,2})\.?\s+([A-Z][A-Za-z ,&/()\-–]{3,70})$")
+_BULLET_RE = re.compile(r"^[•●▪\-]\s*(.+)$")
+_TOC_RE = re.compile(r"(…{2,}|\.{5,})")
+_SENT_SPLIT = re.compile(r"(?<=[.;:])\s+(?=[A-Z(a-z]\)|[A-Z(])")
 
 
 def _pdf_pages(path) -> Iterable[tuple[int, str]]:
@@ -337,54 +352,135 @@ def _pdf_pages(path) -> Iterable[tuple[int, str]]:
             yield i, text.strip()
 
 
-def chunk_pdf(path, source: str, doc_key: str) -> list[Chunk]:
-    """Clause-aware chunking: never split mid-clause, always keep page + clause."""
-    chunks: list[Chunk] = []
-    section = ""
-    buf, buf_page, buf_clause = [], None, ""
-    n = 0
+def _words(s: str) -> int:
+    return len(s.split())
 
-    def flush():
-        nonlocal buf, buf_page, buf_clause, n
-        body = " ".join(buf).strip()
-        if len(body) > 60:
-            n += 1
-            chunks.append(
-                Chunk(f"{doc_key}-{n:04d}", source, doc_key, buf_page, section, buf_clause, body)
-            )
-        buf, buf_page, buf_clause = [], None, ""
+
+def _split_long(text: str, max_words: int, overlap_sents: int = 1) -> list[str]:
+    """Sentence-boundary split with a one-sentence overlap, for blocks that
+    exceed the token budget on their own. Never cuts mid-sentence."""
+    sents = [x.strip() for x in _SENT_SPLIT.split(text) if x.strip()]
+    out, cur = [], []
+    for snt in sents:
+        if cur and _words(" ".join(cur + [snt])) > max_words:
+            out.append(" ".join(cur))
+            cur = cur[-overlap_sents:] if overlap_sents else []
+        cur.append(snt)
+    if cur:
+        out.append(" ".join(cur))
+    return out
+
+
+def chunk_pdf(path, source: str, doc_key: str) -> list[Chunk]:
+    """
+    Structure-aware chunking in three passes.
+
+    1. SEGMENT  the text into atomic blocks, one per clause ("7.2 ...") or
+                SOP bullet ("• Course Add/Drop ..."). Table-of-contents pages
+                are dropped: their dot-leader lines match every query
+                lexically and carry no rules.
+    2. PACK     consecutive blocks of the SAME top-level clause together up to
+                a word budget (~300 tokens, inside the embedder's 512 limit).
+                A chunk never crosses a top-level clause boundary, so its
+                citation is always right. Oversized blocks are split on
+                sentence boundaries with a one-sentence overlap.
+    3. HEADER   each chunk gets a contextual header -- document > section
+                title > clause -- that is embedded with the body, so short
+                sub-clauses keep the meaning of the section they belong to.
+    """
+    max_words = config.CHUNK_MAX_WORDS
+    blocks: list[dict] = []        # {page, top, top_title, clause, lines}
+    top, top_title = "", ""
+    cur = None
+
+    def open_block(page, clause, title=None):
+        nonlocal cur
+        if cur and cur["lines"]:
+            blocks.append(cur)
+        cur = {"page": page, "top": top, "top_title": title or top_title,
+               "clause": clause, "lines": []}
 
     for page_no, text in _pdf_pages(path):
         if not text:
             continue
+        toc_lines = sum(1 for l in text.split("\n") if _TOC_RE.search(l))
+        if toc_lines >= 3:                      # a contents page
+            continue
         for line in text.split("\n"):
             line = line.strip()
-            if not line or re.fullmatch(r"\d{1,3}", line):   # page numbers
+            if not line or re.fullmatch(r"\d{1,3}", line):
                 continue
-            if _SECTION_RE.match(line):
-                flush()
-                section = line.title()
-                continue
+            tt = _TOPLEVEL_TITLE.match(line)
             m = _CLAUSE_RE.match(line)
-            if m and buf:
-                new_clause = m.group(1)
-                top_level = "." not in new_clause
-                # Always break at a new top-level clause ("12. Progression"),
-                # otherwise a chunk inherits the citation of the previous
-                # section and every source attribution built on it is wrong.
-                if top_level or len(" ".join(buf)) > 300:
-                    flush()
-            if buf_page is None:
-                buf_page = page_no
-            if m and not buf_clause:
-                buf_clause = m.group(1)
-            buf.append(line)
-            if len(" ".join(buf)) >= config.CHUNK_TARGET_CHARS:
-                tail = " ".join(buf)[-config.CHUNK_OVERLAP_CHARS:]
-                flush()
-                buf, buf_page = [tail], page_no
-    flush()
-    return chunks
+            b = _BULLET_RE.match(line) if doc_key == "sop" else None
+            if tt:
+                top, top_title = tt.group(1), f"{tt.group(1)}. {tt.group(2).strip()}"
+                open_block(page_no, top, top_title)
+            elif m:
+                cid = m.group(1)
+                if "." not in cid:
+                    top = cid
+                    head = line[m.end():].split(".")[0][:70].strip()
+                    top_title = f"{cid}. {head}" if head else cid
+                open_block(page_no, cid)
+            elif b:
+                title = b.group(1).split(".")[0][:70].strip()
+                top, top_title = title, title
+                open_block(page_no, "", title)
+            elif cur is None:
+                open_block(page_no, "")
+            cur["lines"].append(line)
+    if cur and cur["lines"]:
+        blocks.append(cur)
+
+    # -- pack --
+    chunks: list[Chunk] = []
+    n = 0
+
+    def emit(page, section, clause, parent, body, clause_end=""):
+        nonlocal n
+        body = body.strip()
+        if _words(body) < 8:
+            return
+        n += 1
+        heading = f"{source} > {section}" if section else source
+        chunks.append(Chunk(f"{doc_key}-{n:04d}", source, doc_key, page, section,
+                            clause, body, heading=heading, parent=parent,
+                            clause_end=clause_end))
+
+    pack, pack_meta, pack_ids = [], None, []
+
+    def last_id():
+        ids = [i for i in pack_ids if i]
+        return ids[-1] if ids else ""
+
+    for blk in blocks:
+        body = " ".join(blk["lines"])
+        same_parent = pack_meta and pack_meta["top"] == blk["top"]
+        if pack and (not same_parent or _words(" ".join(pack) + " " + body) > max_words):
+            emit(pack_meta["page"], pack_meta["top_title"], pack_meta["clause"],
+                 pack_meta["top"], " ".join(pack), last_id())
+            pack, pack_meta, pack_ids = [], None, []
+        if _words(body) > max_words:
+            for piece in _split_long(body, max_words):
+                emit(blk["page"], blk["top_title"], blk["clause"], blk["top"], piece)
+            continue
+        if not pack:
+            pack_meta = blk
+        pack.append(body)
+        pack_ids.append(blk["clause"])
+    if pack:
+        emit(pack_meta["page"], pack_meta["top_title"], pack_meta["clause"],
+             pack_meta["top"], " ".join(pack), last_id())
+
+    # -- dedupe exact repeats (running headers, repeated notices) --
+    seen, out = set(), []
+    for c in chunks:
+        key = re.sub(r"\W+", "", c.text.lower())[:400]
+        if key not in seen:
+            seen.add(key)
+            out.append(c)
+    return out
 
 
 def catalogue_chunks(courses: pd.DataFrame, baskets: pd.DataFrame,
@@ -407,21 +503,33 @@ def catalogue_chunks(courses: pd.DataFrame, baskets: pd.DataFrame,
             f"Offered in semester(s): {sems or 'not listed'}."
         )
         chunks.append(Chunk(f"cat-{n:04d}", "Programme Structure & Semester Spread (Sept 2026)",
-                            "catalogue", None, f"Batch {batch}", code, text))
+                            "catalogue", None, f"Batch {batch}", code, text,
+                            heading=f"Course catalogue > batch {batch} > {code} {r['title']}",
+                            parent=code, batch=str(batch)))
 
     for batch, grp in baskets.groupby("batch"):
         n += 1
         body = "; ".join(f"{r.basket}: {r.min_credits:g} credits" for r in grp.itertuples())
         chunks.append(Chunk(f"cat-{n:04d}", "Programme Structure & Semester Spread (Sept 2026)",
                             "catalogue", None, f"Batch {batch}", "credit-requirements",
-                            f"Minimum credit requirements per basket for batch {batch}: {body}."))
+                            f"Minimum credit requirements per basket for batch {batch}: {body}. "
+                            f"The B.Tech degree requires these credits for graduation.",
+                            heading=f"Programme structure > batch {batch} > credit requirements",
+                            parent="credits", batch=str(batch)))
 
     for minor, grp in minors.groupby("minor"):
         n += 1
         listed = "; ".join(f"{r.course_code or '(code n/a)'} {r.title}" for r in grp.itertuples())
         chunks.append(Chunk(f"cat-{n:04d}", "Minor Courses for B.Tech Students", "catalogue",
                             None, "Minors", minor,
-                            f"The {minor} minor for B.Tech students includes: {listed}."))
+                            f"The {minor} minor for B.Tech students includes: {listed}.",
+                            heading=f"Minor programmes > {minor}", parent="minors"))
+    n += 1
+    names = ", ".join(sorted(minors.minor.unique()))
+    chunks.append(Chunk(f"cat-{n:04d}", "Minor Courses for B.Tech Students", "catalogue",
+                        None, "Minors", "minor-list",
+                        f"Minors available to B.Tech students: {names}.",
+                        heading="Minor programmes > list of all minors", parent="minors"))
     return chunks
 
 

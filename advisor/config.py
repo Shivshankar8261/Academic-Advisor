@@ -26,21 +26,42 @@ CHUNKS_JSONL = PROCESSED / "chunks.jsonl"
 STUDENTS_JSON = PROCESSED / "synthetic_students.json"
 TESTSET_JSON = PROCESSED / "testset.json"
 
-# --- LLM ---
-LLM_PROVIDER = os.getenv("LLM_PROVIDER", "gemini")
-GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.6-flash")
-EMBED_MODEL = os.getenv("EMBED_MODEL", "models/gemini-embedding-001")
-EMBED_BATCH = int(os.getenv("EMBED_BATCH", "16"))   # quota meters CONTENTS, not calls
-EMBED_PAUSE = float(os.getenv("EMBED_PAUSE", "11"))  # seconds between batches (free tier)
-TEMPERATURE = 0.0          # deterministic: required for reproducible evaluation
-MAX_OUTPUT_TOKENS = 1200
+# --- LLM: Groq primary, Gemini fallback ---------------------------------
+def _secret(name: str) -> str:
+    """Environment first, then .env, then Streamlit secrets."""
+    if os.getenv(name):
+        return os.getenv(name, "")
+    env = ROOT / ".env"
+    if env.exists():
+        for line in env.read_text().splitlines():
+            if line.startswith(name + "="):
+                return line.split("=", 1)[1].strip().strip('"')
+    try:
+        import streamlit as st
+        return str(st.secrets.get(name, ""))
+    except Exception:
+        return ""
 
-# --- Retrieval ---
-TOP_K = 6                  # chunks passed to the generator
-BM25_WEIGHT = 0.5          # hybrid fusion weight (lexical vs dense)
-MIN_DENSE_SIM = 0.62       # abstain below this raw cosine similarity (absolute, not ranked)
-MIN_TERM_COVERAGE = 0.34   # ...and below this share of query words found in any chunk
-CHUNK_TARGET_CHARS = 1100
-CHUNK_OVERLAP_CHARS = 150
+GROQ_MODEL = os.getenv("GROQ_MODEL", "openai/gpt-oss-120b")
+GROQ_FALLBACK_MODELS = ["openai/gpt-oss-20b"]   # separate per-model quota
+GROQ_REASONING_EFFORT = "low"      # gpt-oss is a reasoning model; low keeps TPM usage sane
+GROQ_TPM = 8000                    # free-tier tokens/minute for this model
+GEMINI_MODEL = os.getenv("GEMINI_MODEL", "gemini-3.6-flash")
+TEMPERATURE = 0.0                  # deterministic: required for reproducible evaluation
+MAX_OUTPUT_TOKENS = 1000           # includes gpt-oss reasoning tokens
+# How long to wait for Groq's per-minute window before falling back to Gemini.
+# Evaluation waits (comparability: one model answers every case); the app does not.
+GROQ_MAX_WAIT_S = float(os.getenv("GROQ_MAX_WAIT_S", "8"))
+
+# --- Retrieval ---------------------------------------------------------------
+EMBED_MODEL = "BAAI/bge-small-en-v1.5"          # 384-d sentence transformer
+EMBED_QUERY_PREFIX = "Represent this sentence for searching relevant passages: "
+RERANK_MODEL = "cross-encoder/ms-marco-MiniLM-L-6-v2"
+VECTORSTORE_DIR = PROCESSED / "vectorstore"     # FAISS index + metadata
+CANDIDATES = 30            # per retriever, before fusion
+RERANK_POOL = 20           # fused candidates sent to the cross-encoder
+TOP_K = 4                  # passages given to the generator
+RERANK_MIN = -6.97          # abstain below this cross-encoder logit (calibrated)
+CHUNK_MAX_WORDS = 220      # ~300 tokens: inside bge-small's 512-token window
 
 CURRENT_TERM = "Semester 5 (Odd), AY 2026-27"

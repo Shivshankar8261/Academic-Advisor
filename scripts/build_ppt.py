@@ -163,8 +163,8 @@ bullets("Data ingested", "Four provided documents, two deliberately separate lay
     "Minor Courses workbook → 7 minors",
     "STRUCTURED layer: codes, credits, prerequisites, offerings, basket minimums",
     "UNSTRUCTURED layer: regulation prose, chunked at top-level clause boundaries",
-    ("Clause-aware chunking matters: without it a Section 12 passage inherits Clause 11.5.7's "
-     "citation, and every source attribution built on it is wrong.", 1),
+    ("Structure-aware chunking matters: a fixed-size chunker let a Section 12 passage inherit "
+     "Clause 11.5.7's citation. Citations now carry clause ranges: “Clause 7–7.2, p.29”.", 1),
 ], notes="Source correctness is one of the eight graded metrics, so citations must be exact.")
 
 bullets("A real gap in the provided data", "Table 2 is an image, not text", [
@@ -176,18 +176,18 @@ bullets("A real gap in the provided data", "Table 2 is an image, not text", [
     "Also absent: course syllabi (M02), timetables and instructor allocation (M03).",
 ], notes="Strong point in the viva: an honest, verifiable limitation found by inspecting the data.")
 
-bullets("Architecture", "", [
-    "INGEST → PDF to clause-cited chunks; XLSX to course catalogue, baskets, minors",
-    "RETRIEVE → BM25 ⊕ dense embeddings, min-max fused",
-    "ABSTAIN → on ABSOLUTE scores, not the fused score",
-    ("Min-max normalisation always forces the top hit to 1.0 — so the ranked score can never "
-     "say “nothing here”. Abstention uses raw cosine + query-term coverage instead.", 1),
-    ("When both are weak the system returns INSUFFICIENT INFORMATION without calling the "
-     "model at all — a generation step there can only hallucinate.", 1),
-    "REASON → rule engine computes eligibility; conflict detector flags contradictions",
-    "GENERATE → Gemini 3.6 Flash, temperature 0, output contract "
-    "ANSWER · EVIDENCE · CONFIDENCE · FOLLOW-UP",
-], notes="The abstention bug is worth dwelling on — it is the subtlest engineering point.")
+bullets("Architecture", "Retrieval + rule engine + model router", [
+    "CHUNK → structure-aware: one clause per block, packed within the same top-level clause "
+    "(≤ ~300 tokens), contents pages dropped, contextual header embedded with each chunk",
+    "EMBED → BAAI/bge-small-en-v1.5 sentence transformer (384-d), runs locally",
+    "STORE → FAISS IndexFlatIP vector database (exact cosine), persisted to disk",
+    "RETRIEVE → BM25 + FAISS, fused by Reciprocal Rank Fusion, filtered to the student's batch",
+    "RERANK → cross-encoder ms-marco-MiniLM-L-6-v2, top-20 → top-4",
+    "ABSTAIN → gate on the cross-encoder's ABSOLUTE score; below the calibrated threshold the "
+    "model is never called",
+    ("A min-max fused score always rates the best hit 1.0 — it can never say “nothing here”.", 1),
+    "GENERATE → Groq gpt-oss-120b → gpt-oss-20b → Gemini 3.6 Flash fallback, temperature 0",
+], notes="The abstention point is the subtlest engineering decision — worth explaining.")
 
 bullets("Phase 3 — Prompt engineering, one ingredient at a time", "", [
     "V1 Basic LLM — the question, sent to the model",
@@ -291,7 +291,7 @@ bullets("Limitations", "Where the system still fails", [
     "2023/2024 semester spreads are sparse in the source workbook → genuinely unanswerable.",
     "Minor credits are not placed in the semester spread → basket progress approximate.",
     f"{len(confs)} conflicts are DETECTED, not RESOLVED — the documents do not say which governs.",
-    "No cross-encoder reranker (free-tier quota); source correctness could go higher.",
+    "Groq free tier: 200K tokens/day — fallback answers come from a different model.",
     "Abstention thresholds are hand-calibrated — the single most sensitive setting: "
     "too strict refuses answerable questions, too loose hallucinates.",
 ])

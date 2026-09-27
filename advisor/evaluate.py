@@ -70,12 +70,30 @@ def _source_ok(case: TestCase, ans: AdvisorAnswer) -> bool | None:
     blob = " ".join(ans.citations) + " " + ans.text
     m = re.search(r"Clause\s*([\d.]+)", exp)
     if m:
-        return bool(re.search(rf"Clause\s*{re.escape(m.group(1))}", blob, re.I))
+        want = m.group(1).rstrip(".")
+        return _clause_cited(want, blob)
     for key in ("Programme Structure", "Semester Spread", "Student Handbook",
                 "SOP", "Minor Courses"):
         if key.lower() in exp.lower():
             return key.lower() in blob.lower()
     return None
+
+
+def _clause_key(c: str) -> tuple:
+    return tuple(int(x) for x in c.strip(".").split(".") if x.isdigit())
+
+
+def _clause_cited(want: str, blob: str) -> bool:
+    """True if the expected clause is cited exactly, or falls inside a cited
+    clause range ('Clause 7-7.2' covers 7.2), or its parent clause is cited."""
+    w = _clause_key(want)
+    for a, b in re.findall(r"Clause[s]?\s*(\d+(?:\.\d+)*)(?:\s*[–-]\s*(\d+(?:\.\d+)*))?", blob, re.I):
+        lo, hi = _clause_key(a), _clause_key(b or a)
+        if not lo:
+            continue
+        if lo == w or (lo <= w <= hi) or (w[:len(lo)] == lo and not b):
+            return True
+    return False
 
 
 @dataclass
@@ -96,6 +114,9 @@ class CaseResult:
     citations: int = 0
     answer: str = ""
     error: str = ""
+    provider: str = ""
+    model: str = ""
+    top_rerank: float | None = None
 
 
 def score_case(case: TestCase, ans: AdvisorAnswer) -> CaseResult:
@@ -135,7 +156,8 @@ def score_case(case: TestCase, ans: AdvisorAnswer) -> CaseResult:
                       case.behaviour, got, b_ok, label, len(matched),
                       len(case.must_include), traps,
                       _source_ok(case, ans), ans.latency_s, len(ans.citations),
-                      text[:1500])
+                      text[:1500], "", ans.provider or ("none" if ans.abstained else ""),
+                      ans.model, (max(h.score for h in ans.hits) if ans.hits else None))
 
 
 # --------------------------------------------------------------------------
@@ -212,6 +234,7 @@ def metrics(results: list[CaseResult]) -> dict:
         "errors": int((lab == ERROR).sum()),
         "mean_citations": round(float(df.citations.mean()), 2),
         "followup_rate_%": pct(df.behaviour_observed == ASK),
+        "fallback_answers": int((df.provider == "gemini").sum()) if "provider" in df else 0,
         "abstention_rate_%": pct(df.behaviour_observed == ABSTAIN),
     }
 

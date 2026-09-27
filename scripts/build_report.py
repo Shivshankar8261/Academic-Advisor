@@ -143,10 +143,21 @@ separators while preserving `A/B` alternatives. Basket minimums are read from bo
 alone is complete for every batch.
 
 **Unstructured layer** — `chunks.jsonl`, **{chunks}** passages carrying
-`source · clause · page`. Chunking is clause-aware: a chunk is always cut at a new
-*top-level* clause. This matters directly — without it, a passage about progression
-(Section 12) inherits the citation of the preceding section (11.5.7), and every source
-attribution built on it is wrong. Source correctness is one of the eight graded metrics.
+`source · section · clause range · page`, built by **structure-aware chunking** in three passes:
+
+1. **Segment** the text into atomic blocks — one per clause (`7.2 …`) or SOP bullet
+   (`• Course Add/Drop …`). Table-of-contents pages (3–5) are dropped: their dot-leader lines
+   lexically match almost every query and contain no rules.
+2. **Pack** consecutive blocks of the *same top-level clause* up to ~220 words (≈300 tokens,
+   inside the 512-token window of the embedder). A chunk never crosses a top-level clause
+   boundary; over-long clauses are split on sentence boundaries with a one-sentence overlap.
+3. **Contextual header** — every chunk is embedded as
+   `Student Handbook > 7. Attendance Requirements` + body, so a bare sub-clause such as
+   "7.3 … sixty-five percent" keeps the meaning of the section it belongs to.
+
+Why it matters: an earlier fixed-size chunker let a Section 12 (Progression) passage inherit
+the citation of Clause 11.5.7, so every citation built on it was wrong. Citations now carry
+clause **ranges** (`Clause 7–7.2 — p.29`), and source correctness is one of the eight metrics.
 
 ### 2.1 A real gap in the provided data
 
@@ -174,10 +185,10 @@ M02), as are timetables and instructor allocations (M03).
         ┌────────────────────────────┼────────────────────────────┐
         ▼                            ▼                            ▼
 ┌───────────────┐          ┌──────────────────┐        ┌────────────────────┐
-│ HYBRID        │          │ RULE ENGINE      │        │ CONFLICT DETECTOR  │
-│ RETRIEVER     │          │ (deterministic)  │        │ dangling prereqs,  │
-│ BM25 ⊕ dense  │          │ prereqs, credits,│        │ ordering breaks,   │
-│ + abstention  │          │ attendance, CGPA │        │ cross-batch drift  │
+│ RETRIEVER     │          │ RULE ENGINE      │        │ CONFLICT DETECTOR  │
+│ BM25 + FAISS  │          │ (deterministic)  │        │ dangling prereqs,  │
+│ → RRF → rerank│          │ prereqs, credits,│        │ ordering breaks,   │
+│ + abstain gate│          │ attendance, CGPA │        │ cross-batch drift  │
 └───────┬───────┘          └────────┬─────────┘        └─────────┬──────────┘
         │ evidence + citations      │ verified facts             │ warnings
         └────────────────┬──────────┴────────────────────────────┘
@@ -186,26 +197,53 @@ M02), as are timetables and instructor allocations (M03).
               │ PROMPT ASSEMBLY (V1–V4)│  XML-delimited: evidence │ record │ question
               └───────────┬────────────┘
                           ▼
-                   Gemini 3.6 Flash  (temperature 0 — reproducible)
+   Groq gpt-oss-120b → Groq gpt-oss-20b → Gemini 3.6 Flash  (temperature 0)
                           ▼
               ANSWER · EVIDENCE · CONFIDENCE · FOLLOW-UP
 ```
 
-### 3.1 Retrieval
+### 3.1 Retrieval: vector database, hybrid search, reranking
 
-Academic queries mix exact-token lookups (`DATA301`, `Clause 7.2`, `65%`) with paraphrased
-concepts (*"can I retake a subject I failed?"*). BM25 handles the first, dense embeddings
-(`gemini-embedding-001`) the second; scores are min-max normalised and blended.
+```
+query ─┬─► BM25 (lexical)                   top-30 ─┐
+       └─► bge-small-en-v1.5 → FAISS        top-30 ─┴─► Reciprocal Rank Fusion
+                                                          │ metadata filter: student's batch
+                                                          ▼
+                                    cross-encoder rerank top-20 ─► top-4 to the LLM
+```
 
-**The abstention decision deliberately does not use the blended score.** Min-max
-normalisation always forces the top hit to 1.0, which would make "no relevant document"
-undetectable — the system could never abstain. Abstention instead uses two scale-free
-signals: raw cosine similarity of the best hit, and the share of query content-words that
-appear in any retrieved chunk. When both are weak the system returns
-`INSUFFICIENT INFORMATION` **without calling the model at all**, since a generation step at
-that point can only hallucinate.
+| Stage | Component | Why it is there |
+|---|---|---|
+| Lexical | BM25 | exact tokens the embedder blurs: `DATA301`, `Clause 7.2`, `65%` |
+| Dense | `BAAI/bge-small-en-v1.5` sentence transformer (384-d), local, no API quota | paraphrase: *"move to third year"* ≈ *"Progression to Year 3"* |
+| Vector DB | **FAISS** `IndexFlatIP` on L2-normalised vectors (exact cosine), persisted to disk and keyed by a hash of corpus + model | at ~400 chunks exact search is sub-millisecond with perfect recall; HNSW/IVF only pays off beyond ~10⁵ vectors |
+| Fusion | Reciprocal Rank Fusion (k = 60) | merges by *rank*, so incompatible BM25 and cosine scales never meet |
+| Filter | metadata: catalogue chunks restricted to the student's batch | a 2025 student is never shown the 2022 prerequisite list |
+| Rerank | `cross-encoder/ms-marco-MiniLM-L-6-v2` | reads query and passage *together* — far more precise than two independent vectors |
 
-### 3.2 Rule engine
+**Abstention gate.** A min-max-normalised fused score always rates the best hit 1.0, so it
+can never say "nothing here" — an early version of this system could not abstain at all for
+exactly that reason. The cross-encoder logit is an **absolute** relevance score, so the gate
+uses it: if even the best passage scores below `RERANK_MIN`, the model is **never called**.
+The threshold ({config.RERANK_MIN}) was calibrated on the test set under a strict policy —
+**no answerable question may be refused at the gate** — which places it midway between the
+weakest answerable query and the strongest separable out-of-scope query. Borderline cases
+(a request to scrape the Digii portal overlaps the SOP lexically) fall through to a second
+layer: grounding rules in the prompt that oblige the model to say `INSUFFICIENT INFORMATION`.
+
+### 3.2 LLM routing
+
+| Tier | Model | Role |
+|---|---|---|
+| 1 | Groq `openai/gpt-oss-120b` | primary — fast, strong; free tier 8K tokens/min, 200K/day |
+| 2 | Groq `openai/gpt-oss-20b` | separate quota, absorbs the daily limit |
+| 3 | Gemini `gemini-3.6-flash` | different provider; each configured key tried, refused keys disabled |
+
+A rolling 60-second token window throttles Groq *before* sending rather than firing requests
+into a 429. Every answer records the tier that produced it, and time spent waiting on rate
+limits is excluded from the latency metric.
+
+### 3.3 Rule engine
 
 Encoded directly from the handbook, each rule carrying its clause:
 
@@ -223,7 +261,7 @@ Encoded directly from the handbook, each rule carrying its clause:
 | Maximum duration | N + 2 years | 6.1 |
 | Total credits | 180 | Programme structure |
 
-### 3.3 Conflict detection
+### 3.4 Conflict detection
 
 **{len(confs)} genuine conflicts** were mined from the university's own curriculum:
 
@@ -332,7 +370,8 @@ As the brief distinguishes them:
 
 A system can be correct on easy questions and unreliable on ambiguous ones, so both are
 reported separately throughout. Temperature is fixed at 0 and all four variants share one
-model, one retriever and one parser, so the comparison is like-for-like.
+model (Groq `gpt-oss-120b`, with the evaluation waiting on rate limits rather than falling
+back), one retriever and one parser, so the comparison is like-for-like.
 
 ---
 """)
@@ -432,14 +471,17 @@ the outcome mix and both charts are inserted here automatically.*
    an escalation path; the system does not decide which side governs, because the documents
    do not say. This is the correct behaviour, but it means some questions end in
    "ask the Programme Chair".
-5. **Retrieval is lexical-plus-dense, not reranked.** A cross-encoder reranker would likely
-   lift source correctness further; it was left out to keep the free-tier quota viable.
+5. **Small embedder.** `bge-small` (384-d) was chosen for CPU speed and a free deployment;
+   a larger embedder (bge-large, e5-large) may lift recall on paraphrased questions.
 6. **Single model, single run.** Temperature 0 makes runs reproducible but does not measure
    variance across models. Latency figures are network-dependent.
-7. **Abstention thresholds are tuned, not learned.** `MIN_DENSE_SIM` and
-   `MIN_TERM_COVERAGE` were calibrated by hand on the out-of-corpus cases. Too strict and
-   the system refuses answerable questions; too loose and it hallucinates. This trade-off is
-   real and is the single most sensitive setting in the system.
+7. **The abstention gate is calibrated on a small set.** `RERANK_MIN` was fitted on 34 cases
+   with only two out-of-scope examples. Too strict and the system refuses answerable
+   questions; too loose and it relies entirely on the prompt's grounding rules. This is the
+   single most sensitive setting in the system and would need a larger held-out set.
+8. **Free-tier quotas.** Groq's 200K tokens/day bounds how many evaluation runs fit in a day;
+   the fallback chain keeps the app alive, but answers from a fallback tier come from a
+   different model than the one evaluated.
 
 ## 10. Responsible use
 
@@ -474,7 +516,8 @@ the outcome mix and both charts are inserted here automatically.*
 
 ```
 advisor/ingest.py       PDF + Excel → structured tables and cited chunks
-advisor/retriever.py    BM25 ⊕ dense hybrid, absolute-score abstention
+advisor/retriever.py    BM25 + bge-small/FAISS → RRF → cross-encoder rerank, abstention gate
+advisor/llm.py          Groq → Groq → Gemini router with token-window throttle
 advisor/eligibility.py  deterministic rule engine (clause-cited)
 advisor/conflicts.py    dangling / ordering / cross-batch conflict mining
 advisor/prompts.py      the four variants, one ingredient apart

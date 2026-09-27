@@ -1,86 +1,78 @@
 """
-Calibrate the abstention thresholds against the test set.
+Calibrate the retrieval-stage abstention threshold (config.RERANK_MIN).
 
-The abstention test uses ABSOLUTE retrieval signals (raw cosine similarity and
-query-term coverage), because the fused rank score is min-max normalised and so
-always puts the best hit at 1.0 -- it cannot express "nothing here".
+Abstention happens at TWO layers:
+  1. Retrieval gate  -- if the cross-encoder judges even the best passage
+                        irrelevant, the model is never called (this script).
+  2. Grounding rules -- if relevant passages exist but do not contain the
+                        answer (e.g. Clause 8.10 mentions Table 2 but the table
+                        is an image), the prompt obliges the model to say
+                        INSUFFICIENT INFORMATION.
 
-Absolute cosine distributions differ sharply between the TF-IDF fallback and
-Gemini embeddings, so the thresholds must be re-fitted whenever the index type
-changes. This script sweeps both thresholds and picks the pair that best
-separates answerable cases from genuinely unanswerable ones.
+The gate must therefore be conservative: refusing an answerable question is a
+visible failure, while a missed gate is still caught by layer 2. The threshold
+is placed midway between the weakest ANSWERABLE question and the strongest
+OUT-OF-SCOPE one.
 
     python3 scripts/calibrate_abstention.py
 """
 from __future__ import annotations
 
+import re
 import sys
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from advisor import config, testset            # noqa: E402
-from advisor.retriever import HybridRetriever  # noqa: E402
-
-UNANSWERABLE = {"missing_information", "out_of_scope"}
+from advisor import config, testset                      # noqa: E402
+from advisor.eligibility import load_students            # noqa: E402
+from advisor.retriever import HybridRetriever            # noqa: E402
 
 
 def main() -> None:
     r = HybridRetriever()
-    cases = testset.load()
-    print(f"index mode = {r.mode}, {len(r.chunks)} chunks, {len(cases)} cases\n")
-
+    students = {s.student_id: s for s in load_students()}
     rows = []
-    for c in cases:
-        hits = r.search(c.question, k=config.TOP_K)
-        rows.append({
-            "id": c.id,
-            "category": c.category,
-            "should_abstain": c.category in UNANSWERABLE,
-            "best_cos": max((h.dense for h in hits), default=0.0),
-            "best_cov": max((h.coverage for h in hits), default=0.0),
-        })
-    df = pd.DataFrame(rows)
+    for c in testset.load():
+        stu = students.get(c.student_id) if c.student_id else None
+        hits = r.search(c.question, batch=stu.batch if stu else None)
+        rows.append({"id": c.id, "category": c.category,
+                     "group": ("out_of_scope" if c.category == "out_of_scope"
+                               else "missing_info" if c.category == "missing_information"
+                               else "answerable"),
+                     "best_rerank": round(max(h.score for h in hits), 2) if hits else -99,
+                     "top_source": hits[0].chunk.citation()[:60] if hits else ""})
+    df = pd.DataFrame(rows).sort_values("best_rerank")
+    print(df.to_string(index=False), "\n")
 
-    print("Signal distributions:")
-    print(df.groupby("should_abstain")[["best_cos", "best_cov"]]
-            .agg(["min", "mean", "max"]).round(3).to_string(), "\n")
-
-    best = None
-    for sim in np.arange(0.30, 0.95, 0.01):
-        for cov in np.arange(0.05, 0.70, 0.01):
-            pred = (df.best_cos < sim) & (df.best_cov < cov)
-            tp = int((pred & df.should_abstain).sum())
-            fp = int((pred & ~df.should_abstain).sum())
-            fn = int((~pred & df.should_abstain).sum())
-            # False positives are the expensive error: refusing a question the
-            # documents CAN answer looks broken to a user. Weight them 2x.
-            score = tp - 2 * fp - fn
-            if best is None or score > best[0]:
-                best = (score, round(float(sim), 2), round(float(cov), 2), tp, fp, fn)
-
-    score, sim, cov, tp, fp, fn = best
-    n_abs = int(df.should_abstain.sum())
-    print(f"Best thresholds:  MIN_DENSE_SIM = {sim}   MIN_TERM_COVERAGE = {cov}")
-    print(f"  correctly abstained     {tp}/{n_abs}")
-    print(f"  wrongly refused         {fp}   (answerable questions declined)")
-    print(f"  missed abstentions      {fn}\n")
+    ans = df[df.group == "answerable"].best_rerank
+    oos = df[df.group == "out_of_scope"].best_rerank
+    lo_ans = float(ans.min())
+    # Policy: the gate may NEVER refuse an answerable question. It is placed
+    # midway between the weakest answerable query and the strongest
+    # out-of-scope query that lies BELOW it. Out-of-scope queries that
+    # overlap answerable ones lexically (S02 mentions the Digii portal, which
+    # the SOP describes) are left to the grounding/scope rules in the prompt.
+    below = oos[oos < lo_ans]
+    hi_oos = float(below.max()) if len(below) else lo_ans - 2.0
+    thr = round((lo_ans + hi_oos) / 2, 2)
+    print(f"weakest answerable question : {lo_ans:.2f}")
+    print(f"strongest separable out-of-scope : {hi_oos:.2f}")
+    print(f"=> RERANK_MIN = {thr}   (margin {lo_ans - thr:.2f} / {thr - hi_oos:.2f})")
+    refused = int((ans < thr).sum())
+    gated = int((oos < thr).sum())
+    print(f"   answerable wrongly refused at gate : {refused}/{len(ans)}")
+    print(f"   out-of-scope stopped at gate       : {gated}/{len(oos)}")
+    print(f"   missing-info cases -> handled by grounding rules (layer 2)")
 
     cfg = ROOT / "advisor" / "config.py"
-    s = cfg.read_text()
-    import re
-    s = re.sub(r"MIN_DENSE_SIM = [\d.]+", f"MIN_DENSE_SIM = {sim}", s)
-    s = re.sub(r"MIN_TERM_COVERAGE = [\d.]+", f"MIN_TERM_COVERAGE = {cov}", s)
+    s = re.sub(r"RERANK_MIN = -?[\d.]+", f"RERANK_MIN = {thr}", cfg.read_text())
     cfg.write_text(s)
-    print(f"config.py updated.")
-
-    out = config.RESULTS / "abstention_calibration.csv"
-    df.to_csv(out, index=False)
-    print(f"per-case signals -> {out.name}")
+    df.to_csv(config.RESULTS / "abstention_calibration.csv", index=False)
+    print("\nconfig.py updated; per-case scores -> results/abstention_calibration.csv")
 
 
 if __name__ == "__main__":

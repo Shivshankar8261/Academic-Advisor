@@ -1,8 +1,9 @@
 """
 AI Academic Advisor -- deployable prototype (Phase 6).
 
-Run locally :  streamlit run app.py
-Deploy      :  push to GitHub -> share.streamlit.io -> add GOOGLE_API_KEY to Secrets
+Run locally :  streamlit run app.py          (keys read from .env)
+Deploy      :  push to GitHub -> share.streamlit.io -> add GROQ_API_KEY and
+               GOOGLE_API_KEY (+ optional GOOGLE_API_KEY_2) to Secrets
 """
 from __future__ import annotations
 
@@ -38,21 +39,20 @@ st.markdown("""
 
 
 # --------------------------------------------------------------------------
-@st.cache_resource(show_spinner="Indexing university documents…")
-def _bootstrap(api_key: str):
+@st.cache_resource(show_spinner="Loading the vector database and models (first run ~30 s)…")
+def _bootstrap():
     if not config.CHUNKS_JSONL.exists():
         from advisor.ingest import build_all
         build_all(verbose=False)
     if not config.STUDENTS_JSON.exists():
         from advisor.synthetic import main as gen
         gen()
-    return HybridRetriever(api_key=api_key), EligibilityEngine()
+    return HybridRetriever(), EligibilityEngine()
 
 
-def _key() -> str:
-    return (st.session_state.get("api_key")
-            or os.getenv("GOOGLE_API_KEY", "")
-            or st.secrets.get("GOOGLE_API_KEY", "") if hasattr(st, "secrets") else "")
+@st.cache_resource(show_spinner=False)
+def _llm():
+    return LLMClient()
 
 
 # --------------------------------------------------------------------------
@@ -60,14 +60,12 @@ with st.sidebar:
     st.header("🎓 Academic Advisor")
     st.caption("DATA308 · Generative AI · Assignment #1")
 
-    default_key = os.getenv("GOOGLE_API_KEY", "")
-    try:
-        default_key = default_key or st.secrets.get("GOOGLE_API_KEY", "")
-    except Exception:
-        pass
-    st.session_state["api_key"] = st.text_input(
-        "Google Gemini API key", value=default_key, type="password",
-        help="Get one free at aistudio.google.com/apikey")
+    _probe = _llm()
+    if _probe.available:
+        st.success("Model: " + " → ".join(
+            f"{p.name}:{p.model.split('/')[-1]}" for p in _probe.providers), icon="✅")
+    else:
+        st.error("No GROQ_API_KEY / GOOGLE_API_KEY configured.")
 
     st.divider()
     variant = st.selectbox(
@@ -103,23 +101,14 @@ with st.sidebar:
     st.caption("⚠️ Advisory only. Confirm with your Faculty Advisor before registering.")
 
 # --------------------------------------------------------------------------
-api_key = st.session_state.get("api_key", "")
-if not api_key:
+llm = _llm()
+if not llm.available:
     st.title("AI Academic Advisor")
-    st.info("Enter a Google Gemini API key in the sidebar to begin. "
-            "A free key is available at **aistudio.google.com/apikey**.")
-    st.subheader("What this system does")
-    st.markdown("""
-- Answers academic questions **only** from the four provided university documents, with a clause-level citation for each claim.
-- Computes prerequisites, credits, attendance and progression with a **deterministic rule engine** — the model never does the arithmetic.
-- **Asks a follow-up question** when the answer would change depending on information you have not given.
-- Says **"insufficient information"** instead of guessing when the documents do not cover something.
-- **Flags contradictions** in the curriculum rather than silently picking a side.
-""")
+    st.error("No model key configured. Add GROQ_API_KEY (and optionally "
+             "GOOGLE_API_KEY) to .env locally or to Streamlit Secrets when deployed.")
     st.stop()
 
-retriever, engine = _bootstrap(api_key)
-llm = LLMClient(api_key=api_key)
+retriever, engine = _bootstrap()
 advisor = AcademicAdvisor(
     variant,
     retriever=retriever if variant in ("V3_rag", "V4_rag_student") else None,
@@ -174,6 +163,9 @@ if question:
         if ans.asked_followup:
             head += '<span class="pill p-md">follow-up asked</span>'
         head += f'<span class="pill p-ab">{ans.latency_s:.1f}s</span>'
+        if ans.model:
+            head += (f'<span class="pill p-ab">{ans.model.split("/")[-1]}'
+                     f'{" (fallback)" if ans.fallback_used else ""}</span>')
         st.markdown(head, unsafe_allow_html=True)
         st.markdown(ans.text)
 
@@ -192,7 +184,7 @@ if question:
                 for h in ans.hits:
                     st.markdown(
                         f'<div class="ev"><b>{h.chunk.citation()}</b> · '
-                        f'score {h.score:.2f} · cosine {h.dense:.2f}<br>'
+                        f'rerank {h.score:.2f} · cosine {h.dense:.2f} · BM25 {h.bm25:.1f}<br>'
                         f'{h.chunk.text[:600]}…</div>', unsafe_allow_html=True)
 
         if show_facts and ans.engine_facts:

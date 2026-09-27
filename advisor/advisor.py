@@ -31,6 +31,9 @@ class AdvisorAnswer:
     engine_facts: str = ""
     ok: bool = True
     error: str = ""
+    provider: str = ""
+    model: str = ""
+    fallback_used: bool = False
 
     @property
     def answer_section(self) -> str:
@@ -91,7 +94,9 @@ class AcademicAdvisor:
         evidence = student_block = ""
 
         if self.uses_rag:
-            hits = self.retriever.search(question, k=config.TOP_K)
+            # metadata filter: only this student's curriculum batch is eligible
+            hits = self.retriever.search(question, k=config.TOP_K,
+                                         batch=(student.batch if student else None))
             if self.retriever.is_out_of_corpus(hits):
                 # Abstain WITHOUT calling the model: the corpus demonstrably
                 # does not cover this, so a generation step can only hallucinate.
@@ -133,18 +138,22 @@ class AcademicAdvisor:
             text=text,
             citations=self.parse_citations(text),
             hits=hits,
-            latency_s=time.perf_counter() - t0,
-            abstained=text.strip().upper().startswith("INSUFFICIENT INFORMATION"),
+            latency_s=time.perf_counter() - t0 - resp.wait_s,
+            abstained="INSUFFICIENT INFORMATION" in text.strip().upper()[:120],
             asked_followup=self._asked_followup(text),
             confidence=self._confidence(text),
             engine_facts=student_block,
+            provider=resp.provider,
+            model=resp.model,
+            fallback_used=resp.fallback_used,
         )
 
 
-def build_all_variants(api_key: str | None = None) -> dict[str, AcademicAdvisor]:
+def build_all_variants(api_key: str | None = None,
+                       max_wait: float | None = None) -> dict[str, AcademicAdvisor]:
     """Share one retriever/engine/LLM across variants so timings are comparable."""
-    llm = LLMClient(api_key=api_key)
-    retr = HybridRetriever(api_key=api_key)
+    llm = LLMClient(api_key=api_key, max_wait=max_wait)
+    retr = HybridRetriever()
     eng = EligibilityEngine()
     out = {}
     for v in prompts.VARIANTS:
