@@ -4,3 +4,4 @@ __pycache__/
 data/processed/embeddings_*.pkl
 .env
 .DS_Store
+.DS_Store
