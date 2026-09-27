@@ -1,0 +1,203 @@
+batch,sheet,semester,basket_code,basket,course_code,title,prereq_raw,prereqs,L,T,P,credits,sem_num
+2022,Sem Spread BTECH-2022,S1,B1,Univ Core,UCOR103,Communication Skills,NIL,[],1.0,0.0,2.0,2.0,1.0
+2022,Sem Spread BTECH-2022,S2,B1,Univ Core,UCOR203,Leadership and Teamwork Skills,NIL,[],1.0,0.0,2.0,2.0,2.0
+2022,Sem Spread BTECH-2022,S3,B1,Univ Core,UCOR205,Socio Cultural Perspectives on Indian Life-SPIL,NIL,[],2.0,1.0,0.0,3.0,3.0
+2022,Sem Spread BTECH-2022,S4,B1,Univ Core,UCOR210,Critical Thinking,NIL,[],2.0,0.0,0.0,2.0,4.0
+2022,Sem Spread BTECH-2022,S1,B1,Univ Core,UCOR104,Problem Solving with Design Thinking,NIL,[],1.0,0.0,2.0,2.0,1.0
+2022,Sem Spread BTECH-2022,S2,B1,Univ Core,UCOR701,Community Engagement & Service Experience,NIL,[],0.0,0.0,0.0,1.0,2.0
+2022,Sem Spread BTECH-2022,S3,B1,Univ Core,UCOR201,Introduction to Epistemology,NIL,[],1.0,1.0,0.0,2.0,3.0
+2022,Sem Spread BTECH-2022,S1,B1,Univ Core,UCOR102,Introduction to writing,NIL,[],1.0,0.0,2.0,2.0,1.0
+2022,Sem Spread BTECH-2022,S2,B1,Univ Core,UCOR106,Learning to Learn,NIL,[],1.0,0.0,2.0,2.0,2.0
+2022,Sem Spread BTECH-2022,S1,B2,Foundation,MATH201,Calculus,NIL,[],2.0,1.0,0.0,3.0,1.0
+2022,Sem Spread BTECH-2022,S2,B2,Foundation,MATH202,Probability Theory,NIL,[],2.0,1.0,0.0,3.0,2.0
+2022,Sem Spread BTECH-2022,S3,B2,Foundation,MTSC781,Sustainable Cities and Communities,NIL,[],0.0,0.0,0.0,3.0,3.0
+2022,Sem Spread BTECH-2022,S4,B2,Foundation,SLAD206,Human Values in Work and Life,NIL,[],0.0,0.0,0.0,2.0,4.0
+2022,Sem Spread BTECH-2022,S6,B2,Foundation,LANG101,Language,NIL,[],0.0,0.0,0.0,3.0,6.0
+2022,Sem Spread BTECH-2022,S1,B2,Foundation,COMP132,Design Workshop,NIL,[],0.0,0.0,4.0,2.0,1.0
+2022,Sem Spread BTECH-2022,S2,B2,Foundation,MTSC211,Sustainable Smart Materials,MTSC111,['MTSC111'],2.0,0.0,2.0,3.0,2.0
+2022,Sem Spread BTECH-2022,S4,B2,Foundation,SLAD207,Foundation Seminar,NIL,[],0.0,0.0,0.0,1.0,4.0
+2022,Sem Spread BTECH-2022,S1,B2,Foundation,MTSC111,Materials for Smart Devices,NIL,[],2.0,0.0,2.0,3.0,1.0
+2022,Sem Spread BTECH-2022,S2,B2,Foundation,ENGL201,Academic Writing,UCOR102,['UCOR102'],2.0,0.0,2.0,3.0,2.0
+2022,Sem Spread BTECH-2022,S3,B2,Foundation,MATH204,Linear Algebra,NIL,[],2.0,1.0,0.0,3.0,3.0
+2022,Sem Spread BTECH-2022,S1,B2,Foundation,DATA131,Visualizing Data for Story Telling,NIL,[],1.0,0.0,2.0,2.0,1.0
+2022,Sem Spread BTECH-2022,S1,B2,Foundation,PSYC101/ECON101,Introduction to Psychology/Introduction to Economics,NIL,[],2.0,1.0,0.0,3.0,1.0
+2022,Sem Spread BTECH-2022,S1,B3,Program CORE,DATA130,Computational Thinking,NIL,[],2.0,0.0,2.0,3.0,1.0
+2022,Sem Spread BTECH-2022,S2,B3,Program CORE,COMP201,Data Structures,NIL,[],3.0,0.0,2.0,4.0,2.0
+2022,Sem Spread BTECH-2022,S3,B3,Program CORE,COMP203,Analysis of Algorithms,COMP201,['COMP201'],3.0,0.0,2.0,4.0,3.0
+2022,Sem Spread BTECH-2022,S4,B3,Program CORE,COMP205,Object Oriented Programming,NIL,[],2.0,0.0,2.0,3.0,4.0
+2022,Sem Spread BTECH-2022,S5,B3,Program CORE,COMP208,Networks,NIL,[],3.0,0.0,2.0,4.0,5.0
+2022,Sem Spread BTECH-2022,S7,B3,Program CORE,COMP302,Internet of Things,"COMP132, COMP201, COMP206, COMP208, COMP301","['COMP132', 'COMP201', 'COMP206', 'COMP208', 'COMP301']",0.0,0.0,4.0,2.0,7.0
+2022,Sem Spread BTECH-2022,S2,B3,Program CORE,MATH205,Statistics with R,MATH202,['MATH202'],2.0,0.0,2.0,3.0,2.0
+2022,Sem Spread BTECH-2022,S3,B3,Program CORE,COMP202,Theoretical Computer Science,NIL,[],3.0,1.0,0.0,4.0,3.0
+2022,Sem Spread BTECH-2022,S4,B3,Program CORE,COMP204,Digital Design and Computer Organization,NIL,[],3.0,1.0,0.0,4.0,4.0
+2022,Sem Spread BTECH-2022,S5,B3,Program CORE,COMP207,Operating Systems,NIL,[],2.0,0.0,2.0,3.0,5.0
+2022,Sem Spread BTECH-2022,S6,B3,Program CORE,COMP206,Microprocessors and Computer Architecture,"COMP204, COMP207","['COMP204', 'COMP207']",3.0,0.0,2.0,4.0,6.0
+2022,Sem Spread BTECH-2022,S4,B3,Program CORE,COMP301,Artificial Intelligence,NIL,[],3.0,0.0,2.0,4.0,4.0
+2022,Sem Spread BTECH-2022,S4,B3,Program CORE,COMP209,Databases Management,NIL,[],3.0,0.0,2.0,4.0,4.0
+2022,Sem Spread BTECH-2022,S2,B4,Program HONORS,DATA201,Foundations to Data Science,NIL,[],2.0,0.0,2.0,3.0,2.0
+2022,Sem Spread BTECH-2022,S3,B4,Program HONORS,DATA202,Exploratory Data Analysis,"DATA201, MATH203","['DATA201', 'MATH203']",2.0,0.0,2.0,3.0,3.0
+2022,Sem Spread BTECH-2022,S4,B4,Program HONORS,MATH301,Optimization Techniques for Data Science,MATH201,['MATH201'],3.0,1.0,0.0,4.0,4.0
+2022,Sem Spread BTECH-2022,S5,B4,Program HONORS,DATA301,Machine Learning,"DATA202, MATH301","['DATA202', 'MATH301']",2.0,0.0,4.0,4.0,5.0
+2022,Sem Spread BTECH-2022,S6,B4,Program HONORS,DATA302,Deep Learning,DATA301,['DATA301'],2.0,0.0,4.0,4.0,6.0
+2022,Sem Spread BTECH-2022,S5,B4,Program HONORS,DATA207,Human Centric AI,COMP210/COMP301,"['COMP210', 'COMP301']",1.0,0.0,2.0,2.0,5.0
+2022,Sem Spread BTECH-2022,S5,B5,Specialization Tracks,MATH401/COMP401,SPT-Course #1-Probabilistic Graph Models LTP: 3-0-2 /Web Framework LTP: 2-0-4,NIL/NIL,[],2.0,0.0,4.0,4.0,5.0
+2022,Sem Spread BTECH-2022,S6,B5,Specialization Tracks,DATA402/DATA406,SPT-Course #2 (Advanced Visualization and Storytelling/Big Data Framework),DATA301/NIL,['DATA301'],2.0,0.0,4.0,4.0,6.0
+2022,Sem Spread BTECH-2022,S7,B5,Specialization Tracks,DATA403/COMP402,SPT-Course #3 (Natural Language Processing / Software Architecture and Deployments),"DATA302/COMP205, COMP401","['DATA302', 'COMP205', 'COMP401']",2.0,0.0,4.0,4.0,7.0
+2022,Sem Spread BTECH-2022,S7,B5,Specialization Tracks,DATA404,SPT-Course #4 (Multi Modal Learning / Cloud Computing),DATA302,['DATA302'],2.0,0.0,4.0,4.0,7.0
+2022,Sem Spread BTECH-2022,S7,B5,Specialization Tracks,DATA405,SPT-Course #5 (Reinforcement Learning/ Cognitive Computing),"MATH202,MATH204","['MATH202', 'MATH204']",2.0,0.0,4.0,4.0,7.0
+2022,Sem Spread BTECH-2022,S5,B7,Internship/ Capstone Project,DATA801,Summer Training/Internship,NIL,[],0.0,0.0,0.0,2.0,5.0
+2022,Sem Spread BTECH-2022,S7,B7,Internship/ Capstone Project,DATA802,Interdisciplinary Project,NIL,[],0.0,0.0,0.0,4.0,7.0
+2022,Sem Spread BTECH-2022,S8,B7,Internship/ Capstone Project,DATA803,Capstone Project/Industrial Internship,NIL,[],0.0,0.0,0.0,12.0,8.0
+2023,Sem_Spread_2023,S1,B1,Univ Core,UCOR103,Communication Skills,NIL,[],1.0,0.0,2.0,2.0,1.0
+2023,Sem_Spread_2023,S2,B1,Univ Core,UCOR203,Leadership and Teamwork Skills,NIL,[],1.0,0.0,2.0,2.0,2.0
+2023,Sem_Spread_2023,S3,B1,Univ Core,UCOR205,Socio Cultural Perspectives on Indian Life-SPIL,NIL,[],2.0,1.0,0.0,3.0,3.0
+2023,Sem_Spread_2023,S1,B1,Univ Core,UCOR104,Problem Solving with Design Thinking,NIL,[],1.0,0.0,2.0,2.0,1.0
+2023,Sem_Spread_2023,S2,B1,Univ Core,UCOR701,Community Engagement & Service Experience,NIL,[],0.0,0.0,0.0,1.0,2.0
+2023,Sem_Spread_2023,S1,B1,Univ Core,UCOR102,Introduction to writing,NIL,[],1.0,0.0,2.0,2.0,1.0
+2023,Sem_Spread_2023,S2,B1,Univ Core,UCOR106,Learning to Learn,NIL,[],1.0,0.0,2.0,2.0,2.0
+2023,Sem_Spread_2023,S3,B1,Univ Core,UCOR201,Introduction to Epistemology,NIL,[],1.0,1.0,0.0,2.0,3.0
+2023,Sem_Spread_2023,S1,B2,Foundation,MATH202,Probability Theory,NIL,[],2.0,1.0,0.0,3.0,1.0
+2023,Sem_Spread_2023,S2,B2,Foundation,MATH201,Calculus,NIL,[],2.0,1.0,0.0,3.0,2.0
+2023,Sem_Spread_2023,S3,B2,Foundation,MTSC781,Sustainable Cities and Communities,NIL,[],0.0,0.0,0.0,3.0,3.0
+2023,Sem_Spread_2023,S1,B2,Foundation,COMP132,Design Workshop,NIL,[],0.0,0.0,4.0,2.0,1.0
+2023,Sem_Spread_2023,S2,B2,Foundation,MTSC211,Sustainable Smart Materials,MTSC111,['MTSC111'],2.0,0.0,2.0,3.0,2.0
+2023,Sem_Spread_2023,S3,B2,Foundation,MATH204,Linear Algebra,NIL,[],2.0,1.0,0.0,3.0,3.0
+2023,Sem_Spread_2023,S1,B2,Foundation,MTSC111,Materials for Smart Devices,NIL,[],2.0,0.0,2.0,3.0,1.0
+2023,Sem_Spread_2023,S2,B2,Foundation,ENGL201,Academic Writing,UCOR102,['UCOR102'],2.0,0.0,2.0,3.0,2.0
+2023,Sem_Spread_2023,S1,B2,Foundation,PSYC101/ECON101,Introduction to Psychology/Introduction to Economics,NIL,[],2.0,1.0,0.0,3.0,1.0
+2023,Sem_Spread_2023,S1,B2,Foundation,DATA131,Visualizing Data for Story Telling,NIL,[],1.0,0.0,2.0,2.0,1.0
+2023,Sem_Spread_2023,S2,B3,Program CORE,COMP201,Data Structures,NIL,[],3.0,0.0,2.0,4.0,2.0
+2023,Sem_Spread_2023,S3,B3,Program CORE,COMP203,Analysis of Algorithms,COMP201,['COMP201'],3.0,0.0,2.0,4.0,3.0
+2023,Sem_Spread_2023,S2,B3,Program CORE,MATH205,Statistics with R,MATH202,['MATH202'],2.0,0.0,2.0,3.0,2.0
+2023,Sem_Spread_2023,S3,B3,Program CORE,COMP202,Theoretical Computer Science,NIL,[],3.0,1.0,0.0,4.0,3.0
+2023,Sem_Spread_2023,S3,B3,Program CORE,MATH207,Research Methodology,NIL,[],2.0,0.0,2.0,3.0,3.0
+2023,Sem_Spread_2023,S2,B4,Program HONORS,DATA201,Foundations to Data Science,NIL,[],2.0,0.0,2.0,3.0,2.0
+2023,Sem_Spread_2023,S3,B4,Program HONORS,DATA202,Exploratory Data Analysis,"DATA201, MATH203","['DATA201', 'MATH203']",2.0,0.0,2.0,3.0,3.0
+2023,Sem_Spread_2023,S7,B5,Specialization Tracks,DATA403,SPT-Course #3 (Natural Language Processing / Natural Language Processing),DATA302,['DATA302'],2.0,0.0,4.0,4.0,7.0
+2023,Sem_Spread_2023,S7,B5,Specialization Tracks,DATA404/COMP402,SPT-Course #4 (Multi Modal Learning/ Software Architecture and Deployments),"DATA302/ COMP205, COMP401","['DATA302', 'COMP205', 'COMP401']",2.0,0.0,4.0,4.0,7.0
+2023,Sem_Spread_2023,S7,B5,Specialization Tracks,DATA408/COMP405,SPT-Course #5 Advanced Topics in Deep Learning LTP: 3-0-2/ Cloud &Cognitive Computing LTP: 2-0-4,DATA302,['DATA302'],,,,4.0,7.0
+2023,Sem_Spread_2023,S7,B7,Internship/ Capstone Project,DATA802,Interdisciplinary Project,NIL,[],0.0,0.0,0.0,4.0,7.0
+2023,Sem_Spread_2023,S8,B7,Internship/ Capstone Project,DATA803,Capstone Project/Industrial Internship,NIL,[],0.0,0.0,0.0,12.0,8.0
+2024,Sem_Spread_2024,S1,B1,Univ Core,UCOR106,Learning to Learn,NIL,[],1.0,0.0,2.0,2.0,1.0
+2024,Sem_Spread_2024,S2,B1,Univ Core,UCOR105,Communication and Leadership Skills,NIL,[],2.0,0.0,2.0,3.0,2.0
+2024,Sem_Spread_2024,S3,B1,Univ Core,UCOR205,Socio Cultural Perspectives on Indian Life-SPIL,NIL,[],2.0,1.0,0.0,3.0,3.0
+2024,Sem_Spread_2024,S1,B1,Univ Core,UCOR104,Problem Solving with Design Thinking,NIL,[],1.0,0.0,2.0,2.0,1.0
+2024,Sem_Spread_2024,S2,B1,Univ Core,UCOR701,Community Engagement & Service Experience,NIL,[],0.0,0.0,0.0,1.0,2.0
+2024,Sem_Spread_2024,S3,B1,Univ Core,LAWS101,Fundamentals of Indian Constitution and Human Rights,Nil,[],1.0,1.0,0.0,2.0,3.0
+2024,Sem_Spread_2024,S1,B1,Univ Core,UCOR102,Introduction to writing,NIL,[],1.0,0.0,2.0,2.0,1.0
+2024,Sem_Spread_2024,S1,B2,Foundation,MATH203,Probability and Statistics,NIL,[],3.0,1.0,0.0,4.0,1.0
+2024,Sem_Spread_2024,S2,B2,Foundation,MATH201,Calculus,NIL,[],2.0,1.0,0.0,3.0,2.0
+2024,Sem_Spread_2024,S3,B2,Foundation,MTSC781,Sustainable Cities and Communities,NIL,[],0.0,0.0,0.0,3.0,3.0
+2024,Sem_Spread_2024,S1,B2,Foundation,COMP132,Design Workshop,NIL,[],0.0,0.0,4.0,2.0,1.0
+2024,Sem_Spread_2024,S2,B2,Foundation,MTSC211,Sustainable Smart Materials,MTSC111,['MTSC111'],2.0,0.0,2.0,3.0,2.0
+2024,Sem_Spread_2024,S3,B2,Foundation,MATH204,Linear Algebra,NIL,[],2.0,1.0,0.0,3.0,3.0
+2024,Sem_Spread_2024,S1,B2,Foundation,MTSC111,Materials for Smart Devices,NIL,[],2.0,0.0,2.0,3.0,1.0
+2024,Sem_Spread_2024,S2,B2,Foundation,ENGL210,Academic Writing,UCOR102,['UCOR102'],1.0,0.0,2.0,2.0,2.0
+2024,Sem_Spread_2024,S1,B2,Foundation,PSYC101/ECON101,Introduction to Psychology/Introduction to Economics,NIL,[],2.0,1.0,0.0,3.0,1.0
+2024,Sem_Spread_2024,S1,B3,Program CORE,DATA103,Programming in Python,NIL,[],1.0,0.0,4.0,3.0,1.0
+2024,Sem_Spread_2024,S2,B3,Program CORE,COMP201,Data Structures,NIL,[],3.0,0.0,2.0,4.0,2.0
+2024,Sem_Spread_2024,S3,B3,Program CORE,COMP203,Analysis of Algorithms,COMP201,['COMP201'],3.0,0.0,2.0,4.0,3.0
+2024,Sem_Spread_2024,S5,B3,Program CORE,COMP208,Networks,NIL,[],3.0,0.0,2.0,4.0,5.0
+2024,Sem_Spread_2024,S7,B3,Program CORE,COMP302,Internet of Things,"COMP132, COMP201, COMP206, COMP208, COMP301","['COMP132', 'COMP201', 'COMP206', 'COMP208', 'COMP301']",0.0,0.0,4.0,2.0,7.0
+2024,Sem_Spread_2024,S2,B3,Program CORE,DATA132,Data visualization and Storytelling,DATA103,['DATA103'],1.0,0.0,4.0,3.0,2.0
+2024,Sem_Spread_2024,S3,B3,Program CORE,COMP202,Theoretical Computer Science,NIL,[],3.0,1.0,0.0,4.0,3.0
+2024,Sem_Spread_2024,S5,B3,Program CORE,COMP207,Operating Systems,NIL,[],2.0,0.0,2.0,3.0,5.0
+2024,Sem_Spread_2024,S5,B3,Program CORE,COMP205,Object Oriented Programming,NIL,[],2.0,0.0,2.0,3.0,5.0
+2024,Sem_Spread_2024,S2,B4,Program HONORS,DATA201,Foundations to Data Science,NIL,[],2.0,0.0,2.0,3.0,2.0
+2024,Sem_Spread_2024,S3,B4,Program HONORS,DATA202,Exploratory Data Analysis,"DATA201, MATH203","['DATA201', 'MATH203']",2.0,0.0,2.0,3.0,3.0
+2024,Sem_Spread_2024,S5,B4,Program HONORS,DATA301,Machine Learning,"DATA202, MATH301","['DATA202', 'MATH301']",2.0,0.0,4.0,4.0,5.0
+2024,Sem_Spread_2024,S3,B4,Program HONORS,MATH206,Advanced Statistical Analysis and Research Methods with R,MATH203,['MATH203'],0.0,0.0,4.0,2.0,3.0
+2024,Sem_Spread_2024,S5,B5,Specialization Tracks,MATH401/COMP401,SPT-Course #1-Probabilistic Graph Models LTP: 3-0-2 /Web Framework LTP: 2-0-4,NIL/NIL,[],2.0,0.0,4.0,4.0,5.0
+2024,Sem_Spread_2024,S7,B5,Specialization Tracks,DATA403,SPT-Course #3 (Natural Language Processing / Natural Language Processing),DATA302,['DATA302'],2.0,0.0,4.0,4.0,7.0
+2024,Sem_Spread_2024,S7,B5,Specialization Tracks,DATA408/COMP402,SPT-Course #4 (Advanced Topics in Deep Learning LTP: 3-0-2/ Software Architecture and Deployments LTP: 2-0-4),"DATA302/ COMP205, COMP401","['DATA302', 'COMP205', 'COMP401']",2.0,0.0,4.0,4.0,7.0
+2024,Sem_Spread_2024,S7,B5,Specialization Tracks,DATA405,SPT-Course #5 Reinforcement Learning/Reinforcement Learning,"MATH202, MATH204","['MATH202', 'MATH204']",2.0,0.0,4.0,4.0,7.0
+2024,Sem_Spread_2024,S5,B7,Internship/ Capstone Project,DATA801,Summer Training/Internship,NIL,[],0.0,0.0,0.0,2.0,5.0
+2024,Sem_Spread_2024,S7,B7,Internship/ Capstone Project,DATA802,Interdisciplinary Project,NIL,[],0.0,0.0,0.0,4.0,7.0
+2024,Sem_Spread_2024,S8,B7,Internship/ Capstone Project,DATA803,Capstone Project/Industrial Internship,NIL,[],0.0,0.0,0.0,12.0,8.0
+2025,Sem_Spread_2025,S1,B1,Univ Core,UCOR103,Communication Skills,Nil,[],1.0,0.0,2.0,2.0,1.0
+2025,Sem_Spread_2025,S2,B1,Univ Core,UCOR111,Environmental Studies and Sustainability,NIL,[],0.0,0.0,0.0,2.0,2.0
+2025,Sem_Spread_2025,S3,B1,Univ Core,UCOR207,Analytical Academic Writing,NIL,[],2.0,1.0,0.0,3.0,3.0
+2025,Sem_Spread_2025,S4,B1,Univ Core,UCOR205,Socio-Cultural Perspectives on Indian Life,Nil,[],2.0,1.0,0.0,3.0,4.0
+2025,Sem_Spread_2025,S5,B1,Univ Core,UCOR310,Critical Thinking,NIL,[],2.0,1.0,0.0,3.0,5.0
+2025,Sem_Spread_2025,S6,B1,Univ Core,UCOR215,Humanistic Leadership Development,NIL,[],1.0,1.0,0.0,2.0,6.0
+2025,Sem_Spread_2025,S1,B1,Univ Core,UCOR106,Learning to Learn,NIL,[],1.0,0.0,2.0,2.0,1.0
+2025,Sem_Spread_2025,S2,B1,Univ Core,LAWS101,Fundamentals of Indian Constitution and Human Rights,NIL,[],1.0,1.0,0.0,2.0,2.0
+2025,Sem_Spread_2025,S5,B1,Univ Core,UCOR104,Problem Solving with Design Thinking,NIL,[],1.0,0.0,2.0,2.0,5.0
+2025,Sem_Spread_2025,S2,B1,Univ Core,UCOR701,Community Engagement & Service Experience,NIL,[],0.0,0.0,0.0,1.0,2.0
+2025,Sem_Spread_2025,S3,B1,Univ Core,SLAD206,Human Values in Work and Life,Nil,[],0.0,0.0,0.0,2.0,3.0
+2025,Sem_Spread_2025,S1,B2,Foundation,MATH208,Multivariate Calculus,Nil,[],3.0,1.0,0.0,4.0,1.0
+2025,Sem_Spread_2025,S2,B2,Foundation,MATH203,Probability and Statistics,NIL,[],3.0,1.0,0.0,4.0,2.0
+2025,Sem_Spread_2025,S3,B2,Foundation,MATH209,Linear Algebra,NIL,[],3.0,1.0,0.0,4.0,3.0
+2025,Sem_Spread_2025,S6,B2,Foundation,TBA,Language,NIL,[],0.0,0.0,0.0,2.0,6.0
+2025,Sem_Spread_2025,S2,B2,Foundation,MTSC211,Sustainable Smart Materials,MTSC111,['MTSC111'],2.0,0.0,2.0,3.0,2.0
+2025,Sem_Spread_2025,S4,B2,Foundation,MATH206,Advanced Statistical Analysis and Research Methods with R,MATH203,['MATH203'],0.0,0.0,4.0,2.0,4.0
+2025,Sem_Spread_2025,S1,B2,Foundation,MTSC111,Materials for Smart Devices,Nil,[],2.0,0.0,2.0,3.0,1.0
+2025,Sem_Spread_2025,S2,B2,Foundation,COMP132,Design Workshop,Nil,[],0.0,0.0,4.0,2.0,2.0
+2025,Sem_Spread_2025,S1,B3,Program CORE,DATA103,Programming in Python,Nil,[],1.0,0.0,4.0,3.0,1.0
+2025,Sem_Spread_2025,S2,B3,Program CORE,COMP201,Data Structures,NIL,[],3.0,0.0,2.0,4.0,2.0
+2025,Sem_Spread_2025,S4,B3,Program CORE,COMP207,Operating Systems,Nil,[],2.0,0.0,2.0,3.0,4.0
+2025,Sem_Spread_2025,S5,B3,Program CORE,COMP206,Microprocessors and Computer Architecture,"COMP204, COMP207","['COMP204', 'COMP207']",3.0,0.0,2.0,4.0,5.0
+2025,Sem_Spread_2025,S1,B3,Program CORE,COMP204,Digital Design and Computer Organization,NIL,[],3.0,1.0,0.0,4.0,1.0
+2025,Sem_Spread_2025,S2,B3,Program CORE,DATA132,Data Visualization and Storytelling,DATA103,['DATA103'],1.0,0.0,4.0,3.0,2.0
+2025,Sem_Spread_2025,S3,B3,Program CORE,COMP202,Theoretical Computer Science,NIL,[],3.0,1.0,0.0,4.0,3.0
+2025,Sem_Spread_2025,S6,B3,Program CORE,COMP208,Networks,NIL,[],3.0,0.0,2.0,4.0,6.0
+2025,Sem_Spread_2025,S2,B3,Program CORE,COMP209,Databases Management,NIL,[],3.0,0.0,2.0,4.0,2.0
+2025,Sem_Spread_2025,S4,B3,Program CORE,COMP301,Artificial Intelligence,NIL,[],3.0,0.0,2.0,4.0,4.0
+2025,Sem_Spread_2025,S6,B3,Program CORE,COMP302,Internet of Things,"COMP132, COMP201, COMP206, COMP208, COMP301","['COMP132', 'COMP201', 'COMP206', 'COMP208', 'COMP301']",0.0,0.0,4.0,2.0,6.0
+2025,Sem_Spread_2025,S3,B3,Program CORE,COMP203,Analysis of Algorithms,COMP201,['COMP201'],3.0,0.0,2.0,4.0,3.0
+2025,Sem_Spread_2025,S4,B3,Program CORE,COMP205,Object Oriented Programming,NIL,[],2.0,0.0,2.0,3.0,4.0
+2025,Sem_Spread_2025,S3,B4,Program HONORS,DATA209,Advanced Exploratory Data Analysis,"DATA132, MATH203","['DATA132', 'MATH203']",2.0,0.0,4.0,4.0,3.0
+2025,Sem_Spread_2025,S4,B4,Program HONORS,MATH301,Optimization Techniques for Data Science,MATH201,['MATH201'],3.0,1.0,0.0,4.0,4.0
+2025,Sem_Spread_2025,S5,B4,Program HONORS,DATA301,Machine Learning,"DATA206, MATH301","['DATA206', 'MATH301']",2.0,0.0,4.0,4.0,5.0
+2025,Sem_Spread_2025,S6,B4,Program HONORS,DATA302,Deep Learning,DATA301,['DATA301'],2.0,0.0,4.0,4.0,6.0
+2025,Sem_Spread_2025,S7,B4,Program HONORS,DATA403,Natural Language Processing,DATA302,['DATA302'],2.0,0.0,4.0,4.0,7.0
+2025,Sem_Spread_2025,S5,B5,Specialization Tracks,MATH401/COMP401,SPT-Course #1-Probabilistic Graph Models LTP: 3-0-2/Web Framework LTP: 2-0-4,NIL/NIL,[],,,,4.0,5.0
+2025,Sem_Spread_2025,S6,B5,Specialization Tracks,DATA404/DATA406,SPT-Course #2-Multi Modal Learning/Big Data Framework,DATA302/NIL,['DATA302'],2.0,0.0,4.0,4.0,6.0
+2025,Sem_Spread_2025,S7,B5,Specialization Tracks,TBA/COMP405,SPT-Course #3 (Image Processing and Computer Vision/Cloud & Cognitive Computing),TBA/NIL,['TBA'],2.0,0.0,4.0,4.0,7.0
+2025,Sem_Spread_2025,S7,B5,Specialization Tracks,DATA408/COMP402,SPT-Course #4 (Advanced Topics in Deep Learning LTP: 3-0-2/ Software Architecture and Deployments LTP: 2-0-4),"DATA302/ COMP205, COMP401","['DATA302', 'COMP205', 'COMP401']",2.0,0.0,4.0,4.0,7.0
+2025,Sem_Spread_2025,S7,B5,Specialization Tracks,DATA405,SPT-Course #5 Reinforcement Learning/Reinforcement Learning,"MATH202, MATH204","['MATH202', 'MATH204']",2.0,0.0,4.0,4.0,7.0
+2025,Sem_Spread_2025,S1,B6,Open/Minor,MGMT101,Essentials of Business Management,Nil,[],1.0,1.0,0.0,2.0,1.0
+2025,Sem_Spread_2025,S7,B6,Open/Minor,DATA802,Inter-Desciplinary Project,NIL,[],0.0,0.0,0.0,4.0,7.0
+2025,Sem_Spread_2025,S1,B6,Open/Minor,PSCY102/ECON105,Introduction to Psychology/Principles of Economics,NIL,[],1.0,0.0,2.0,2.0,1.0
+2025,Sem_Spread_2025,S5,B7,Internship/ Capstone Project,DATA801,Summer Training/Internship,NIL,[],0.0,0.0,0.0,2.0,5.0
+2025,Sem_Spread_2025,S8,B7,Internship/ Capstone Project,DATA803,Capstone Project/ Industrial Internship,NIL,[],0.0,0.0,0.0,12.0,8.0
+2026-DS,Sem_Spread_DS_2026,S1,B1,Univ Core,UCOR107,Communication Skills,Nil,[],2.0,0.0,2.0,3.0,1.0
+2026-DS,Sem_Spread_DS_2026,S2,B1,Univ Core,UCOR111,Environmental Studies and Sustainability,NIL,[],0.0,0.0,0.0,2.0,2.0
+2026-DS,Sem_Spread_DS_2026,S4,B1,Univ Core,UCOR205,Socio-Cultural Perspectives on Indian Life,Nil,[],2.0,1.0,0.0,3.0,4.0
+2026-DS,Sem_Spread_DS_2026,S5,B1,Univ Core,UCOR310,Critical Thinking,NIL,[],2.0,1.0,0.0,3.0,5.0
+2026-DS,Sem_Spread_DS_2026,S1,B1,Univ Core,UCOR106,Learning to Learn,NIL,[],1.0,0.0,2.0,2.0,1.0
+2026-DS,Sem_Spread_DS_2026,S2,B1,Univ Core,LAWS101,Fundamentals of Indian Constitution and Human Rights,NIL,[],1.0,1.0,0.0,2.0,2.0
+2026-DS,Sem_Spread_DS_2026,S5,B1,Univ Core,UCOR104,Problem Solving with Design Thinking,NIL,[],1.0,0.0,2.0,2.0,5.0
+2026-DS,Sem_Spread_DS_2026,S2,B1,Univ Core,UCOR701,Community Engagement & Service Experience,NIL,[],0.0,0.0,0.0,1.0,2.0
+2026-DS,Sem_Spread_DS_2026,S1,B2,Foundation,MATH208,Multivariate Calculus,Nil,[],3.0,1.0,0.0,4.0,1.0
+2026-DS,Sem_Spread_DS_2026,S2,B2,Foundation,MATH203,Probability and Statistics,NIL,[],3.0,1.0,0.0,4.0,2.0
+2026-DS,Sem_Spread_DS_2026,S3,B2,Foundation,MATH209,Linear Algebra,NIL,[],3.0,1.0,0.0,4.0,3.0
+2026-DS,Sem_Spread_DS_2026,S6,B2,Foundation,TBA,Language,NIL,[],0.0,0.0,0.0,2.0,6.0
+2026-DS,Sem_Spread_DS_2026,S2,B2,Foundation,MTSC211,Sustainable Smart Materials,MTSC111,['MTSC111'],2.0,0.0,2.0,3.0,2.0
+2026-DS,Sem_Spread_DS_2026,S4,B2,Foundation,MATH210,Advanced Statistical Analysis and Research Methods,MATH203,['MATH203'],1.0,0.0,4.0,3.0,4.0
+2026-DS,Sem_Spread_DS_2026,S1,B2,Foundation,MTSC111,Materials for Smart Devices,Nil,[],2.0,0.0,2.0,3.0,1.0
+2026-DS,Sem_Spread_DS_2026,S2,B2,Foundation,COMP133,Design Workshop,Nil,[],1.0,0.0,4.0,3.0,2.0
+2026-DS,Sem_Spread_DS_2026,S1,B2,Foundation,DATA103,Programming in Python,Nil,[],1.0,0.0,4.0,3.0,1.0
+2026-DS,Sem_Spread_DS_2026,S2,B2,Foundation,COMP201,Data Structures,NIL,[],3.0,0.0,2.0,4.0,2.0
+2026-DS,Sem_Spread_DS_2026,S3,B2,Foundation,COMP202,Theoretical Computer Science,NIL,[],3.0,1.0,0.0,4.0,3.0
+2026-DS,Sem_Spread_DS_2026,S4,B2,Foundation,COMP211,Operating Systems,Nil,[],3.0,0.0,2.0,4.0,4.0
+2026-DS,Sem_Spread_DS_2026,S5,B2,Foundation,COMP206,Microprocessors and Computer Architecture,"COMP204, COMP207","['COMP204', 'COMP207']",3.0,0.0,2.0,4.0,5.0
+2026-DS,Sem_Spread_DS_2026,S1,B2,Foundation,COMP204,Digital Design and Computer Organization,NIL,[],3.0,1.0,0.0,4.0,1.0
+2026-DS,Sem_Spread_DS_2026,S2,B2,Foundation,DATA132,Data Visualization and Storytelling,DATA103,['DATA103'],1.0,0.0,4.0,3.0,2.0
+2026-DS,Sem_Spread_DS_2026,S3,B2,Foundation,COMP203,Analysis of Algorithms,COMP201,['COMP201'],3.0,0.0,2.0,4.0,3.0
+2026-DS,Sem_Spread_DS_2026,S6,B2,Foundation,COMP208,Networks,Nil,[],3.0,0.0,2.0,4.0,6.0
+2026-DS,Sem_Spread_DS_2026,S2,B2,Foundation,COMP209,Databases Management,NIL,[],3.0,0.0,2.0,4.0,2.0
+2026-DS,Sem_Spread_DS_2026,S4,B2,Foundation,COMP301,Artificial Intelligence,NIL,[],3.0,0.0,2.0,4.0,4.0
+2026-DS,Sem_Spread_DS_2026,S6,B2,Foundation,COMP302,Internet of Things,"COMP132, COMP201, COMP206, COMP208, COMP301","['COMP132', 'COMP201', 'COMP206', 'COMP208', 'COMP301']",0.0,0.0,4.0,2.0,6.0
+2026-DS,Sem_Spread_DS_2026,S7,B2,Foundation,TBA,Compiler Design,Nil,[],3.0,0.0,0.0,3.0,7.0
+2026-DS,Sem_Spread_DS_2026,S4,B2,Foundation,COMP205,Object Oriented Programming,NIL,[],2.0,0.0,2.0,3.0,4.0
+2026-DS,Sem_Spread_DS_2026,S3,B4,Program HONORS,DATA209,Advanced Exploratory Data Analysis,"DATA132, MATH203","['DATA132', 'MATH203']",2.0,0.0,4.0,4.0,3.0
+2026-DS,Sem_Spread_DS_2026,S4,B4,Program HONORS,MATH301,Optimization Techniques for Data Science,MATH201,['MATH201'],3.0,1.0,0.0,4.0,4.0
+2026-DS,Sem_Spread_DS_2026,S5,B4,Program HONORS,DATA301,Machine Learning,"DATA206, MATH301","['DATA206', 'MATH301']",2.0,0.0,4.0,4.0,5.0
+2026-DS,Sem_Spread_DS_2026,S6,B4,Program HONORS,DATA302,Deep Learning,DATA301,['DATA301'],2.0,0.0,4.0,4.0,6.0
+2026-DS,Sem_Spread_DS_2026,S7,B4,Program HONORS,DATA403,Natural Language Processing,DATA302,['DATA302'],2.0,0.0,4.0,4.0,7.0
+2026-DS,Sem_Spread_DS_2026,S1,B6,Open/Minor,MGMT101,Essentials of Business Management,Nil,[],1.0,1.0,0.0,2.0,1.0
+2026-DS,Sem_Spread_DS_2026,S7,B6,Open/Minor,DATA802,Inter-Desciplinary Project,NIL,[],0.0,0.0,0.0,4.0,7.0
+2026-DS,Sem_Spread_DS_2026,S1,B6,Open/Minor,PSYC105/ECON106,Introduction to Psychology/Principles of Economics,NIL,[],1.0,1.0,0.0,2.0,1.0
+2026-DS,Sem_Spread_DS_2026,S5,B7,Internship/ Capstone Project,DATA801,Summer Training/Internship,NIL,[],0.0,0.0,0.0,2.0,5.0
+2026-DS,Sem_Spread_DS_2026,S8,B7,Internship/ Capstone Project,DATA803,Capstone Project/ Industrial Internship,NIL,[],0.0,0.0,0.0,12.0,8.0

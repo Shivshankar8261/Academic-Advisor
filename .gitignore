@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+.streamlit/secrets.toml
+data/processed/embeddings_*.pkl
+.env
+.DS_Store

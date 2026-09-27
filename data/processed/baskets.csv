@@ -1,0 +1,41 @@
+batch,basket,min_credits
+2022,University Core,18.0
+2022,Foundation,34.0
+2022,Program Core,46.0
+2022,Program Honors,20.0
+2022,Specialization Tracks,20.0
+2022,Minor/Open,24.0
+2022,Internship/Capstone,18.0
+2023,University Core,18.0
+2023,Foundation,34.0
+2023,Program Core,46.0
+2023,Program Honors,20.0
+2023,Specialization Tracks,20.0
+2023,Minor/Open,24.0
+2023,Internship/Capstone,18.0
+2024,University Core,18.0
+2024,Foundation,34.0
+2024,Program Core,46.0
+2024,Program Honors,20.0
+2024,Specialization Tracks,20.0
+2024,Minor/Open,24.0
+2024,Internship/Capstone,18.0
+2025,University Core,24.0
+2025,Foundation,24.0
+2025,Program Core,46.0
+2025,Program Honors,20.0
+2025,Specialization Tracks,20.0
+2025,Minor/Open,32.0
+2025,Internship/Capstone,14.0
+2026-DS,University Core,18.0
+2026-DS,Foundation,26.0
+2026-DS,Program Core,50.0
+2026-DS,Program Honors,20.0
+2026-DS,Minor/Open,32.0
+2026-DS,Internship/Capstone,14.0
+2026-DS,Electives,20.0
+2022,TOTAL,180.0
+2023,TOTAL,180.0
+2024,TOTAL,180.0
+2025,TOTAL,180.0
+2026-DS,TOTAL,180.0

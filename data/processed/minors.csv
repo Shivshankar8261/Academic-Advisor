@@ -1,0 +1,105 @@
+minor,course_code,title,credits
+Law Minor,LAWM305,Regulating platform and Gig workers,3.0
+Law Minor,LAWE200,Moral Philosophy and Justice,2.0
+Law Minor,LAWC410,Introduction to Alternative Dispute Resolution Methods,2.0
+Law Minor,LAWB210,Criminology and Victimology,2.0
+Law Minor,LAWM306,Law Relating to start-ups,3.0
+Law Minor,LAWE301,Intellectual Property Rights,2.0
+Law Minor,,Don’t Know,5.0
+Law Minor,LAWP100,Political Science I,2.0
+Law Minor,LAWS301,Legal Methods,2.0
+Law Minor,LAWM301,Constitution for Citizens,2.0
+Law Minor,LAWM302,Basics of International Law,3.0
+Law Minor,LAWP101,Introduction to Political science,3.0
+Law Minor,,2026 Batch,
+Design Minor,CDES105,Appreciating and Deconstructing Art and Media,3.0
+Design Minor,CDES203,Motion Graphic Design,1.0
+Design Minor,CDES504,Environment Design and Communication,1.0
+Design Minor,CDES704,Integrative Studio VI- Exhibition/Museum,2.0
+Design Minor,CDES402,Interaction Design- UI UX,1.0
+Design Minor,CDES216,Drawing and Moving Images,1.0
+Design Minor,CDES712,"(CDES402-Interaction Design- UI UX), (CDES504- Environment Design and Communication)",1.0
+Design Minor,,DON’T KNOW,4.0
+Design Minor,CDES702,"Integrative Studio II- Sensemaking, Visualization",2.0
+Design Minor,CDES221,Information Architecture and Design,2.0
+Design Minor,CDES219,Elements of Sound,2.0
+Design Minor,CDES301,Sketch to Story,2.0
+Design Minor,CDES312,Designing Futures,2.0
+Design Minor,CDES217,Making with Reframed Media,2.0
+Design Minor,CDES218,Frames and Frequencies,2.0
+Design Minor,CDES227,Drawing and Moving Image,2.0
+Design Minor,,2026 Batch,
+Psychology,PSYC201,Biological Psychology,3.0
+Psychology,PSYC202,Cognitive Psychology,2.0
+Psychology,PSYC255,Psychopathology,3.0
+Psychology,PSYC241,Social Psychology,2.0
+Psychology,PSYC204,Developmental Psychology,3.0
+Psychology,PSYC303,Psychological Testing and Measurement,3.0
+Psychology,PSYC104,Lifespan Development I,3.0
+Psychology,PSYC306,Health Psychology,3.0
+Psychology,,Biological Psychology/ Foundations of Psychology I,3.0
+Economics,ECON201,Microeconomics,3.0
+Economics,ECON220,Behavourial Economics,3.0
+Economics,ECON207,Macroeconomics and Applicants to Indian Economy,3.0
+Economics,ECON413,"ECON201, ECON202/ ECON207",3.0
+Economics,ECON325,"ECON201, ECON202/ ECON207",3.0
+Economics,ECON316,Digital Economics,3.0
+Economics,ECON209,Macroeconomics I,3.0
+Economics,ECON315,"ECON201, ECON209",3.0
+Economics,ECON322,Economics of Health and Education,3.0
+Economics,ECON301,International Economics,3.0
+Economics,,No Students,
+Economics,ECON208,Microeconomics I,3.0
+Economics,ECON346,Financial Economics,3.0
+Finance,,Finance Minor,
+Finance,,Financial and Management Accounting (FAMA),1.0
+Finance,FINA333,Fiancial Institutions Markets and Services,2.0
+Finance,MGMT207,Financial and management accounting,3.0
+Finance,MGMT209,Introduction to Financial Accounting,4.0
+Finance,MGMT210,"Financial Instituation, Markets and Services",5.0
+Finance,MGMT213,"Financial Instituation, Markets and Services",6.0
+Finance,MGMT323,Basics of Startup Finance,3.0
+Finance,MGMT203,Marketing Management/ Corporate Finance/ Financial and Management Accounting,2.0
+Finance,MGMT208,Introduction to Financial Accounting,1.0
+Finance,MGMT207,Introduction to Financial Accounting,3.0
+Finance,MGMT210,Fiancial Institutions Markets and Services,5.0
+Finance,MGMT323,Basics of Startup Finance,6.0
+Finance,MGMT213,Introduction To Fintech,1.0
+Finance,MGMT307,Strategy & Decision Making,1.0
+Finance,MGMT207,Corporate Finance,3.0
+Finance,MGMT209,Finacial Statement Analysis,4.0
+Finance,MGMT330,Introduction to Financial Accounting (R ),1.0
+Finance,,Financial Institutions Markets & Services with Fintech (GIVE NEW NAME),2.0
+Finance,,Corporate Finance New Name,3.0
+Finance,MGMT210,Fiancial Institutions Markets and Services,4.0
+Finance,MGMT213,Introduction To Fintech,5.0
+Finance,,2026 Batch,
+Finance,MGMT330,Introduction to Financial Accounting (R),1.0
+Marketing,,Marketing Minor,
+Marketing,,Marketing Management,1.0
+Marketing,MGMT302,Introduction to digital business,2.0
+Marketing,MGMT304,Integrated Marketing Communications,3.0
+Marketing,MGMT314,Sales and distribution management,4.0
+Marketing,MGMT320,Introduction to digital business,5.0
+Marketing,MGMT305,Introduction to digital business,6.0
+Marketing,MGMT211,Introduction to digital business,2.0
+Marketing,MGMT203,Marketing Management/ Corporate Finance/ Financial and Management Accounting,2.0
+Marketing,MKTG201,Marketing Management,1.0
+Marketing,MGMT314,Sales and Distribution Management,4.0
+Marketing,MGMT305,Introduction to digital business,5.0
+Marketing,MGMT211,Introduction to digital business,6.0
+Marketing,MGMT320,Marketing Analytics,1.0
+Marketing,MGMT307,Strategy & Decision Making,1.0
+Marketing,MGMT305,Services Marketing,3.0
+Marketing,MGMT304,Integrated Marketing Communications,4.0
+Marketing,MGMT314,Sales and Distribution Management,5.0
+Marketing,MGMT328,Foundation of Marketing Management,1.0
+Marketing,,Services Marketing,4.0
+Marketing,MGMT328,Foundations of Marketing Management,1.0
+Start-up,,Start -up Minor,
+Start-up,MGMT326,Introduction to digital business,1.0
+Start-up,MGMT336,Design Thinking for Entrepreneurship,2.0
+Start-up,MGMT330,Introduction to Financial Accounting (R ),1.0
+Start-up,MGMT328,Foundation of Marketing Management,2.0
+Start-up,MGMT336,Design Thinking for Entrepreneurship,3.0
+Start-up,MGMT213,Introduction To Fintech,4.0
